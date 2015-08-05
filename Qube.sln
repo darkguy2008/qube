@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2010
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qube.Web.Core", "Qube.Web.Core\Qube.Web.Core.csproj", "{43B292DD-F957-4985-B0A8-594093AE15A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qube.Web.UI", "Qube.Web.UI\Qube.Web.UI.csproj", "{B7E23E44-3155-4958-98E3-A99250A4422C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +15,10 @@ Global
 		{43B292DD-F957-4985-B0A8-594093AE15A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43B292DD-F957-4985-B0A8-594093AE15A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43B292DD-F957-4985-B0A8-594093AE15A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7E23E44-3155-4958-98E3-A99250A4422C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7E23E44-3155-4958-98E3-A99250A4422C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7E23E44-3155-4958-98E3-A99250A4422C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7E23E44-3155-4958-98E3-A99250A4422C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
