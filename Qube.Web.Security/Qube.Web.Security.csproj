@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{43B292DD-F957-4985-B0A8-594093AE15A1}</ProjectGuid>
+    <ProjectGuid>{E892521B-69BA-4978-95CC-08408C68B9D9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Qube.Web.Core</RootNamespace>
-    <AssemblyName>Qube.Web.Core</AssemblyName>
+    <RootNamespace>Qube.Web.Security</RootNamespace>
+    <AssemblyName>Qube.Web.Security</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,8 +32,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,9 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="QSManager.cs" />
-    <Compile Include="WebResource.cs" />
-    <Compile Include="Helpers\HtmlCustomControl.cs" />
+    <Compile Include="ADMembershipProvider.cs" />
+    <Compile Include="ADProfileProvider.cs" />
+    <Compile Include="ADRoleProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
