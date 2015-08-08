@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E5FCAF31-082A-411E-8FEB-6C524AE60C88}</ProjectGuid>
+    <ProjectGuid>{C2261BC0-1DB5-405F-870A-066B5E077C6C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Qube.Extensions</RootNamespace>
-    <AssemblyName>Qube.Extensions</AssemblyName>
+    <RootNamespace>Qube.Console</RootNamespace>
+    <AssemblyName>Qube.Console</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,8 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Reflection.cs" />
-    <Compile Include="XML.cs" />
+    <Compile Include="CommandLine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
