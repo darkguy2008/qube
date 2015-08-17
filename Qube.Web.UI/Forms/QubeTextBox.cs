@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Qube.Globalization;
+using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.UI.WebControls;
 
 namespace Qube.Web.UI
@@ -18,19 +20,25 @@ namespace Qube.Web.UI
         Phone
     }
 
-    public class QubeTextBox : TextBox
+    public class QubeTextBox : TextBox, IQubeFormField
     {
         private CustomValidator cv;
         public bool Required { get; set; }
-        public String FieldName { get; set; }
         public String ErrorMessage { get; set; }
         public String EmptyErrorMessage { get; set; }
         public String LongErrorMessage { get; set; }
         public EValidationType ValidationType { get; set; }
 
+        // Interface members
+        public String FieldName { get; set; }
+        public String DataField { get; set; }
+
+        private GlobalizedStrings Lang;
+
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
+            Lang = new GlobalizedStrings(HttpContext.Current.Server.MapPath("~/App_GlobalResources/Qube." + CultureInfo.CurrentUICulture + ".txt"));
 
             if (MaxLength == 0)
                 MaxLength = 50;
@@ -49,9 +57,9 @@ namespace Qube.Web.UI
         protected override void OnLoad(EventArgs e)
         {            
             base.OnLoad(e);
-            ErrorMessage = String.IsNullOrEmpty(ErrorMessage) ? "The field <strong>{0}</strong> is invalid" : ErrorMessage;
-            EmptyErrorMessage = String.IsNullOrEmpty(EmptyErrorMessage) ? "The field <strong>{0}</strong> is required" : EmptyErrorMessage;
-            LongErrorMessage = String.IsNullOrEmpty(LongErrorMessage) ? "The field <strong>{0}</strong> is too long" : LongErrorMessage;
+            ErrorMessage = String.IsNullOrEmpty(ErrorMessage) ? Lang["TextBoxErrorMessage"] : ErrorMessage;
+            EmptyErrorMessage = String.IsNullOrEmpty(EmptyErrorMessage) ? Lang["TextBoxEmptyMessage"] : EmptyErrorMessage;
+            LongErrorMessage = String.IsNullOrEmpty(LongErrorMessage) ? Lang["TextBoxLongMessage"] : LongErrorMessage;
         }
 
         void cv_ServerValidate(object source, ServerValidateEventArgs args)
@@ -112,6 +120,16 @@ namespace Qube.Web.UI
                     cv.ErrorMessage = String.Format(ErrorMessage, FieldName);
             }
             
+        }
+
+        public T GetValue<T>()
+        {
+            return (T)(object)Text;
+        }
+
+        public void SetValue(object v)
+        {
+            Text = v.ToString();
         }
     }
 
