@@ -1,22 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web;
 using Qube.Web.Core;
 using Qube.Extensions;
 using System.Reflection;
+using System.IO;
 
 namespace Qube.WebServices
 {
     public class JSONWebService : IHttpHandler
     {
         private QSManager qs;
+        public StreamReader Post;
+        public HttpRequest Request;
 
         private void WriteJSON(HttpContext cx, object obj)
         {
             cx.Response.ContentType = "text/plain";
-            cx.Response.Write(obj.ToJSON());
+            cx.Response.Write(obj.ToJSON());            
         }
 
         public void ProcessRequest(HttpContext cx)
@@ -31,19 +33,20 @@ namespace Qube.WebServices
             {
                 String op = qs["op"];
                 qs.Remove("op");
-
-                try
-                {
-                    WriteJSON(cx, Run(op, qs));
-                }
-                catch (Exception e)
-                {
-                    WriteJSON(cx, new
+                Request = cx.Request;
+                using (Post = new StreamReader(cx.Request.InputStream))
+                    try
                     {
-                        StatusCode = 3,
-                        Message = e.Message + (e.InnerException != null ? (", " + e.InnerException.Message) : String.Empty)
-                    });
-                }
+                        WriteJSON(cx, Run(op, qs));
+                    }
+                    catch (Exception e)
+                    {
+                        WriteJSON(cx, new
+                        {
+                            StatusCode = 3,
+                            Message = e.Message + (e.InnerException != null ? (", " + e.InnerException.Message) : String.Empty)
+                        });
+                    }
             }
         }
 
