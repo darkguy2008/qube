@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using static Qube.Web.Core.Extensions;
+using Qube.Web.Core;
 
 namespace Qube.Web.UI
 {
@@ -58,7 +58,7 @@ namespace Qube.Web.UI
             else
             {
                 MasterPage m = Page.Master;
-                ControlFinder<PlaceHolder> cf = new ControlFinder<PlaceHolder>();
+                Extensions.ControlFinder<PlaceHolder> cf = new Extensions.ControlFinder<PlaceHolder>();
                 while (m.Master != null)
                     m = m.Master;
                 cf.FindChildControlsRecursive(m);

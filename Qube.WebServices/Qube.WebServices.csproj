@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E5FCAF31-082A-411E-8FEB-6C524AE60C88}</ProjectGuid>
+    <ProjectGuid>{CC8A4980-1C4F-46A8-B6A0-7F6D3B56A802}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Qube.Extensions</RootNamespace>
-    <AssemblyName>Qube.Extensions</AssemblyName>
+    <RootNamespace>Qube.WebServices</RootNamespace>
+    <AssemblyName>Qube.WebServices</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,10 +41,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Reflection.cs" />
-    <Compile Include="Serialization.cs" />
-    <Compile Include="XML.cs" />
+    <Compile Include="JSONWebService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Qube.Extensions\Qube.Extensions.csproj">
+      <Project>{E5FCAF31-082A-411E-8FEB-6C524AE60C88}</Project>
+      <Name>Qube.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Qube.Web.Core\Qube.Web.Core.csproj">
+      <Project>{43B292DD-F957-4985-B0A8-594093AE15A1}</Project>
+      <Name>Qube.Web.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

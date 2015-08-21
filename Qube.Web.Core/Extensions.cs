@@ -16,6 +16,23 @@ namespace Qube.Web.Core
             return rv;
         }
 
+        public static Control FindControlRecursive(Control root, string id)
+        {
+            if (root.ID == id)
+            {
+                return root;
+            }
+            foreach (Control c in root.Controls)
+            {
+                Control t = FindControlRecursive(c, id);
+                if (t != null)
+                {
+                    return t;
+                }
+            }
+            return null;
+        }
+
         // http://stackoverflow.com/questions/4955769/better-way-to-find-control-in-asp-net
         // Enhanced by DARKGuy (explicitType logic)
         /// <summary>

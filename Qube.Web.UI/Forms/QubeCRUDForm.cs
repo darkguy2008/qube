@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using static Qube.Web.Core.Extensions;
 
 namespace Qube.Web.UI
 {
@@ -58,7 +57,7 @@ namespace Qube.Web.UI
 
         protected override void OnPreRender(EventArgs e)
         {
-            ControlFinder<QubeCRUDFormPanel> cf = new ControlFinder<QubeCRUDFormPanel>();
+            Extensions.ControlFinder<QubeCRUDFormPanel> cf = new Extensions.ControlFinder<QubeCRUDFormPanel>();
             cf.FindChildControlsRecursive(this);
             List<QubeCRUDFormPanel> Panels = cf.FoundControls.ToList();
 
@@ -70,7 +69,7 @@ namespace Qube.Web.UI
 
         public Panel GetCurrentPanel()
         {
-            ControlFinder<QubeCRUDFormPanel> cf = new ControlFinder<QubeCRUDFormPanel>();
+            Extensions.ControlFinder<QubeCRUDFormPanel> cf = new Extensions.ControlFinder<QubeCRUDFormPanel>();
             cf.FindChildControlsRecursive(this);
             return cf.FoundControls.Where(x => x.Types.HasFlag(FormMode)).First();
         }
@@ -79,7 +78,7 @@ namespace Qube.Web.UI
         {
             Panel p = GetCurrentPanel();
 
-            ControlFinder<IQubeFormField> cfFields = new ControlFinder<IQubeFormField>();
+            Extensions.ControlFinder<IQubeFormField> cfFields = new Extensions.ControlFinder<IQubeFormField>();
             cfFields.FindChildControlsRecursive(p, false);
 
             Dictionary<String, IQubeFormField> rv = new Dictionary<String, IQubeFormField>();

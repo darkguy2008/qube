@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qube.Web.Core", "Qube.Web.Core\Qube.Web.Core.csproj", "{43B292DD-F957-4985-B0A8-594093AE15A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qube.Web.UI", "Qube.Web.UI\Qube.Web.UI.csproj", "{B7E23E44-3155-4958-98E3-A99250A4422C}"
@@ -16,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qube.Globalization", "Qube.Globalization\Qube.Globalization.csproj", "{7BB9D0A3-33E3-4E7E-9EE3-0208C94425B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qube.Drawing", "Qube.Drawing\Qube.Drawing.csproj", "{1F5516B9-FFB1-4328-93A4-8BC0C6CE6A8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qube.WebServices", "Qube.WebServices\Qube.WebServices.csproj", "{CC8A4980-1C4F-46A8-B6A0-7F6D3B56A802}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +51,10 @@ Global
 		{1F5516B9-FFB1-4328-93A4-8BC0C6CE6A8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F5516B9-FFB1-4328-93A4-8BC0C6CE6A8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F5516B9-FFB1-4328-93A4-8BC0C6CE6A8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC8A4980-1C4F-46A8-B6A0-7F6D3B56A802}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC8A4980-1C4F-46A8-B6A0-7F6D3B56A802}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC8A4980-1C4F-46A8-B6A0-7F6D3B56A802}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC8A4980-1C4F-46A8-B6A0-7F6D3B56A802}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

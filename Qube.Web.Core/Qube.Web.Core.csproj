@@ -47,6 +47,12 @@
     <Compile Include="Helpers\HtmlCustomControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Qube.Extensions\Qube.Extensions.csproj">
+      <Project>{e5fcaf31-082a-411e-8feb-6c524ae60c88}</Project>
+      <Name>Qube.Extensions</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
