@@ -13,7 +13,8 @@ namespace Qube.Web.Core
         public enum EResourceType
         {
             CSS = 1,
-            Javascript = 2
+            Javascript = 2,
+            Favicon = 3
         }
 
         public String Path { get; set; }
@@ -31,6 +32,9 @@ namespace Qube.Web.Core
                     break;
                 case EResourceType.Javascript:
                     ctrl = new HtmlCustomControl("script");
+                    break;
+                case EResourceType.Favicon:
+                    ctrl = new HtmlCustomControl("link");
                     break;
             }
         }
@@ -54,6 +58,10 @@ namespace Qube.Web.Core
                 case EResourceType.Javascript:
                     ctrl.Attributes.Add("type", "text/javascript");
                     ctrl.Attributes.Add("src", url);
+                    break;
+                case EResourceType.Favicon:
+                    ctrl.Attributes.Add("rel", "icon");
+                    ctrl.Attributes.Add("href", url);
                     break;
             }
 
@@ -79,6 +87,11 @@ namespace Qube.Web.Core
     public class JSRes : WebResource
     {
         public JSRes() : base(EResourceType.Javascript) { }
+    }
+
+    public class FaviconRes : WebResource
+    {
+        public FaviconRes() : base(EResourceType.Favicon) { }
     }
 
 }
