@@ -137,11 +137,14 @@ namespace Qube.Web.UI
         {
             PropertyInfo[] pi = dst.GetType().GetProperties();
             foreach (PropertyInfo p in pi)
-            {
-                if(fields.ContainsKey(p.Name))
-                    if(p.CanWrite)
-                        p.SetValue(dst, Convert.ChangeType(fields[p.Name].GetValue<object>(), p.PropertyType), null);
-            }
+                if (fields.ContainsKey(p.Name))
+                {
+                    object v = Convert.ChangeType(fields[p.Name].GetValue<object>(), p.PropertyType);
+                    if (p.CanWrite)
+                    {
+                        p.SetValue(dst, v, null);
+                    }
+                }
         }
 
         public static void ObjectToFields(object src, Dictionary<String, IQubeFormField> fields)
@@ -149,7 +152,16 @@ namespace Qube.Web.UI
             PropertyInfo[] pi = src.GetType().GetProperties();
             foreach (PropertyInfo p in pi)
                 if (fields.ContainsKey(p.Name))
-                    fields[p.Name].SetValue(p.GetValue(src, null));
+                {
+                    object v = p.GetValue(src, null);
+                    if (v != null)
+                    {
+                        if (v.GetType() == typeof(DateTime))
+                            if (!String.IsNullOrEmpty(fields[p.Name].DataFormatString))
+                                v = ((DateTime)v).ToString(fields[p.Name].DataFormatString);
+                    }
+                    fields[p.Name].SetValue(v);
+                }
         }
     }
 

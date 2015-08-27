@@ -32,6 +32,7 @@ namespace Qube.Web.UI
         // Interface members
         public String FieldName { get; set; }
         public String DataField { get; set; }
+        public String DataFormatString { get; set; }
 
         private GlobalizedStrings Lang;
 
@@ -129,7 +130,7 @@ namespace Qube.Web.UI
 
         public void SetValue(object v)
         {
-            Text = v.ToString();
+            Text = v == null ? String.Empty : v.ToString();
         }
     }
 

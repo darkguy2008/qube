@@ -14,6 +14,7 @@ namespace Qube.Web.UI
         // Interface members
         public String FieldName { get; set; }
         public String DataField { get; set; }
+        public String DataFormatString { get; set; }
 
         public bool Required { get; set; }
         public String ValidatorPlaceHolder { get; set; }

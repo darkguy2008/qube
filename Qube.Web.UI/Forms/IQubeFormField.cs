@@ -6,6 +6,7 @@ namespace Qube.Web.UI
     {
         String FieldName { get; set; }
         String DataField { get; set; }
+        String DataFormatString { get; set; }
         void SetValue(object v);
         T GetValue<T>();
     }
