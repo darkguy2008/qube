@@ -7,6 +7,7 @@ namespace Qube.Globalization
     public class GlobalizedStrings
     {
         private Dictionary<String, String> _dict = new Dictionary<String, String>();
+        public Dictionary<String, String>.KeyCollection Keys { get { return _dict.Keys; } }
 
         public GlobalizedStrings(String filename)
         {
@@ -16,6 +17,9 @@ namespace Qube.Globalization
             foreach(String l in File.ReadAllLines(filename))
             {
                 String line = l.Trim();
+                if (line.StartsWith("#") && String.IsNullOrEmpty(dictKey))
+                    continue;
+
                 if(line.Contains("=") && String.IsNullOrEmpty(dictKey))
                 {
                     dictKey = line.Substring(0, line.IndexOf("="));
@@ -25,12 +29,18 @@ namespace Qube.Globalization
                 if (!line.EndsWith("\\") && !String.IsNullOrEmpty(dictKey))
                 {
                     add = true;
-                    finalString = line;
+                    if (!String.IsNullOrEmpty(finalString))
+                    {
+                        finalString += line.TrimEnd('\\');
+                        finalString += Environment.NewLine;
+                    }
+                    else
+                        finalString = line;
                 }
 
                 if(line.EndsWith("\\") && !String.IsNullOrEmpty(dictKey))
                 {
-                    finalString += line;
+                    finalString += line.TrimEnd('\\');
                     finalString += Environment.NewLine;
                 }
 

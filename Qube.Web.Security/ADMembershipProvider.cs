@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Web.Security;
 using System.DirectoryServices;
 using System.Web;
 using System.Web.Configuration;
-using System.IO;
 
 namespace Italcambio.Web.Security
 {
