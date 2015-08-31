@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Web;
 
 namespace Qube.Web.Core
 {
@@ -9,7 +10,22 @@ namespace Qube.Web.Core
     {
         private Dictionary<String, String> _qs = new Dictionary<String, String>();
 
+        public QSManager(HttpContext cx)
+        {
+            Load(cx.Request.QueryString);
+        }
+
+        public QSManager(HttpRequest rq)
+        {
+            Load(rq.QueryString);
+        }
+
         public QSManager(NameValueCollection qs)
+        {
+            Load(qs);
+        }
+
+        private void Load(NameValueCollection qs)
         {
             foreach (String key in qs.Keys)
                 if (key == null)

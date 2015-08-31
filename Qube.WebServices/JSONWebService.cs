@@ -11,14 +11,14 @@ namespace Qube.WebServices
 {
     public class JSONWebService : IHttpHandler
     {
-        private QSManager qs;
+        protected QSManager qs;
         public StreamReader Post;
         public HttpRequest Request;
 
-        private void WriteJSON(HttpContext cx, object obj)
+        protected virtual void WriteJSON(HttpContext cx, object obj)
         {
             cx.Response.ContentType = "text/plain";
-            cx.Response.Write(obj.ToJSON());            
+            cx.Response.Write(obj.ToJSON());
         }
 
         public void ProcessRequest(HttpContext cx)
