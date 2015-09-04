@@ -41,17 +41,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\QubeDropDownList.cs" />
-    <Compile Include="Forms\QubeCheckBox.cs" />
-    <Compile Include="Forms\QubeCustomValidator.cs" />
-    <Compile Include="Forms\QubeFileUpload.cs" />
+    <Compile Include="Forms\Components\QubeDropDownList.cs" />
+    <Compile Include="Forms\Components\QubeCheckBox.cs" />
+    <Compile Include="Forms\Components\QubeCustomValidator.cs" />
+    <Compile Include="Forms\Components\QubeFileUpload.cs" />
+    <Compile Include="Forms\QubeFormBase.cs" />
+    <Compile Include="Forms\QubeContactForm.cs" />
     <Compile Include="Stand-alone\Captcha.cs" />
-    <Compile Include="Forms\IQubeFormField.cs" />
+    <Compile Include="Forms\Components\IQubeFormField.cs" />
     <Compile Include="Stand-alone\MailTo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Forms\QubeCRUDForm.cs" />
     <Compile Include="Stand-alone\QubeTag.cs" />
-    <Compile Include="Forms\QubeTextBox.cs" />
+    <Compile Include="Forms\Components\QubeTextBox.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Qube.Globalization\Qube.Globalization.csproj">
