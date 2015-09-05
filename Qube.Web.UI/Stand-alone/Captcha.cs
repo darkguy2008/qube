@@ -39,7 +39,7 @@ namespace Qube.Web.UI
 
         void cv_ServerValidate(object source, ServerValidateEventArgs args)
         {
-            TextBox txCaptcha = (TextBox)Page.FindControl(ValidationTextBoxID);
+            TextBox txCaptcha = (TextBox)Extensions.FindControlRecursive(Page, ValidationTextBoxID);
 
             if (txCaptcha.Text.Trim() == HttpContext.Current.Session["Captcha_" + ID].ToString())
             {

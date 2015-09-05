@@ -36,7 +36,7 @@ namespace Qube.Web.UI
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
-            Lang = new GlobalizedStrings(HttpContext.Current.Server.MapPath("~/App_GlobalResources/Qube." + CultureInfo.CurrentUICulture.TwoLetterISOLanguageName + ".txt"));
+            Lang = new GlobalizedStrings();
         }
 
         protected override void OnLoad(EventArgs e)

@@ -141,9 +141,7 @@ namespace Qube.Web.UI
                 {
                     object v = Convert.ChangeType(fields[p.Name].GetValue<object>(), p.PropertyType);
                     if (p.CanWrite)
-                    {
                         p.SetValue(dst, v, null);
-                    }
                 }
         }
 
@@ -155,11 +153,9 @@ namespace Qube.Web.UI
                 {
                     object v = p.GetValue(src, null);
                     if (v != null)
-                    {
                         if (v.GetType() == typeof(DateTime))
                             if (!String.IsNullOrEmpty(fields[p.Name].DataFormatString))
                                 v = ((DateTime)v).ToString(fields[p.Name].DataFormatString);
-                    }
                     fields[p.Name].SetValue(v);
                 }
         }

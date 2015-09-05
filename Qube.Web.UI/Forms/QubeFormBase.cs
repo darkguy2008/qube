@@ -7,7 +7,7 @@ using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace Qube.Web.UI.Forms
+namespace Qube.Web.UI
 {
     public class QubeFormBase : HtmlCustomControl
     {
@@ -17,7 +17,6 @@ namespace Qube.Web.UI.Forms
 
         public QubeFormBase() : base("div")
         {
-
         }
 
         protected override void OnLoad(EventArgs e)
@@ -61,9 +60,7 @@ namespace Qube.Web.UI.Forms
                 {
                     object v = Convert.ChangeType(fields[p.Name].GetValue<object>(), p.PropertyType);
                     if (p.CanWrite)
-                    {
                         p.SetValue(dst, v, null);
-                    }
                 }
         }
 
@@ -88,16 +85,25 @@ namespace Qube.Web.UI.Forms
     public class QubeFormBasePanel : HtmlCustomControl
     {
         public bool IsCurrent { get; set; }
-        private QubeFormBasePanel FormParent;
+        protected QubeFormBase FormParent;
+
+        public event EventHandler LoadControls;
 
         public QubeFormBasePanel() : base("div")
         {
+            this.Init += QubeFormBasePanel_Init;
+        }
+
+        private void QubeFormBasePanel_Init(object sender, EventArgs e)
+        {
+            FormParent = Parent as QubeFormBase;
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            FormParent = Parent as QubeFormBasePanel;
+            if (LoadControls != null)
+                LoadControls.Invoke(this, null);
         }
 
         protected override void Render(HtmlTextWriter w)
@@ -111,16 +117,28 @@ namespace Qube.Web.UI.Forms
                     HtmlCustomControl lbField = new HtmlCustomControl("label");
                     lbField.Attributes["for"] = c.ClientID;
                     lbField.Controls.Add(new Literal() { Text = ((IQubeFormField)c).FieldName + ":" });
+                    HtmlCustomControl span = new HtmlCustomControl("span");
                     lbField.RenderControl(w);
+                    span.RenderBeginTag(w);
                     c.RenderControl(w);
+                    span.RenderEndTag(w);
                     continue;
                 }
-                c.RenderControl(w);
+                else if (c.GetType() == typeof(Captcha))
+                {
+                    HtmlCustomControl lbField = new HtmlCustomControl("label");
+                    lbField.Controls.Add(new Literal() { Text = "&nbsp;" });
+                    HtmlCustomControl span = new HtmlCustomControl("span");
+                    lbField.RenderControl(w);
+                    span.RenderBeginTag(w);
+                    c.RenderControl(w);
+                    span.RenderEndTag(w);
+                }
+                else
+                    c.RenderControl(w);
             }
 
             base.RenderEndTag(w);
-
-            // TODO: CreateControl functions
         }
     }
 }
