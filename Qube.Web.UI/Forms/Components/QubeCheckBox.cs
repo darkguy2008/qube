@@ -42,5 +42,10 @@ namespace Qube.Web.UI
         {
             Checked = (bool)v;
         }
+
+        public string GetFormattedValue()
+        {
+            return String.Format(Checked.ToString(), DataFormatString);
+        }
     }
 }

@@ -2,7 +2,6 @@
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.UI.WebControls;
 
 namespace Qube.Web.UI
@@ -108,7 +107,7 @@ namespace Qube.Web.UI
                             args.IsValid = false;
                         break;
                     case EValidationType.Date:
-                        DateTime tmp = DateTime.Now;
+                        DateTime tmp = DateTime.MinValue;
                         if (!DateTime.TryParseExact(args.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out tmp))
                             args.IsValid = false;
                         break;                        
@@ -131,6 +130,17 @@ namespace Qube.Web.UI
         public void SetValue(object v)
         {
             Text = v == null ? String.Empty : v.ToString();
+        }
+
+        public string GetFormattedValue()
+        {
+            switch(ValidationType)
+            {
+                case EValidationType.Date:
+                    return DateTime.ParseExact(Text, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None).ToString(DataFormatString);
+                default:
+                    return String.Format(Text, DataFormatString);
+            }
         }
     }
 

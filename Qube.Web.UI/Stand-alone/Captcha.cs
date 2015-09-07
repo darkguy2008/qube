@@ -139,7 +139,7 @@ namespace Qube.Web.UI
             Matrix mx = new Matrix();
             mx.Translate(0F, 0F);
             path.Warp(points, r, mx, WarpMode.Perspective, 0F);
-            hbr = new HatchBrush(HatchStyle.LargeConfetti, Color.LightGray, Color.DarkGray);
+            hbr = new HatchBrush(HatchStyle.LargeConfetti, Color.DarkGray, Color.Gray);
             g.FillPath(hbr, path);
 
             int m = Math.Max(r.Width, r.Height);

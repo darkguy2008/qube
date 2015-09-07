@@ -1,8 +1,6 @@
 ﻿using Qube.Globalization;
 using System;
-using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Qube.Web.Core;
@@ -65,7 +63,7 @@ namespace Qube.Web.UI
                 cf.FindChildControlsRecursive(m);
                 PlaceHolder vph = cf.FoundControls.Where(x => x.ID == ValidatorPlaceHolder).SingleOrDefault();
                 if (vph == null)
-                    throw new Exception("Cannot find asp:PlaceHolder inside page with ID '" + ValidatorPlaceHolder + "' required for validating a QubeFileUpload control");
+                    throw new Exception("Cannot find asp:PlaceHolder inside page with ID '" + ValidatorPlaceHolder + "' required for validating a QubeDropdownList control");
                 vph.Controls.Add(cv);
             }
 
@@ -90,6 +88,11 @@ namespace Qube.Web.UI
         public void SetValue(object v)
         {
             SelectedValue = v.ToString();
+        }
+
+        public string GetFormattedValue()
+        {
+            return String.Format(SelectedItem.Value, DataFormatString);
         }
     }
 }

@@ -45,6 +45,7 @@
     <Compile Include="Forms\Components\QubeCheckBox.cs" />
     <Compile Include="Forms\Components\QubeCustomValidator.cs" />
     <Compile Include="Forms\Components\QubeFileUpload.cs" />
+    <Compile Include="Forms\QubeStandardForm.cs" />
     <Compile Include="Forms\QubeFormBase.cs" />
     <Compile Include="Forms\QubeContactForm.cs" />
     <Compile Include="Stand-alone\Captcha.cs" />

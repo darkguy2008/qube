@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -11,9 +10,17 @@ namespace Qube.Web.UI
 {
     public class QubeFormBase : HtmlCustomControl
     {
+        public class QubeFormBaseSubmitArguments
+        {
+            public Dictionary<String, IQubeFormField> Fields { get; set; }
+            public bool Success { get; set; }
+            public bool Cancel { get; set; }
+        }
+        public delegate void QubeFormBaseSubmitEventHandler(QubeFormBase sender, QubeFormBaseSubmitArguments args);
         public delegate void QubeFormBaseOperationEventHandler(QubeFormBase sender, Dictionary<String, IQubeFormField> fields);
+        public event EventHandler FormLoad;
         public event QubeFormBaseOperationEventHandler FirstLoad;
-        public event QubeFormBaseOperationEventHandler Submit;
+        public event QubeFormBaseSubmitEventHandler Submit;
 
         public QubeFormBase() : base("div")
         {
@@ -22,7 +29,14 @@ namespace Qube.Web.UI
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+            InvokeLoad(e);
             InvokeFirstLoad();
+        }
+
+        public void InvokeLoad(EventArgs e)
+        {
+            if (FormLoad != null)
+                FormLoad(this, e);
         }
 
         public void InvokeFirstLoad()
@@ -31,10 +45,16 @@ namespace Qube.Web.UI
                 FirstLoad(this, GetFields());
         }
 
+        public void InvokeSubmit(QubeFormBaseSubmitArguments args)
+        {
+            if (Submit != null)
+                Submit.Invoke(this, args);
+        }
+
         public Panel GetCurrentPanel()
         {
             Extensions.ControlFinder<QubeFormBasePanel> cf = new Extensions.ControlFinder<QubeFormBasePanel>();
-            cf.FindChildControlsRecursive(this);
+            cf.FindChildControlsRecursive(this, false);
             return cf.FoundControls.Where(x => x.IsCurrent).Single();
         }
 
@@ -47,7 +67,8 @@ namespace Qube.Web.UI
 
             Dictionary<String, IQubeFormField> rv = new Dictionary<String, IQubeFormField>();
             foreach (Control c in cfFields.FoundControls)
-                rv[((IQubeFormField)c).DataField] = c as IQubeFormField;
+                if(!String.IsNullOrEmpty(((IQubeFormField)c).DataField))
+                    rv[((IQubeFormField)c).DataField] = c as IQubeFormField;
 
             return rv;
         }

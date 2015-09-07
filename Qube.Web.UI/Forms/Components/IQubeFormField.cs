@@ -9,5 +9,6 @@ namespace Qube.Web.UI
         String DataFormatString { get; set; }
         void SetValue(object v);
         T GetValue<T>();
+        String GetFormattedValue();
     }
 }

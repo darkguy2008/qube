@@ -1,7 +1,5 @@
 ﻿using Qube.Globalization;
 using System;
-using System.Globalization;
-using System.Web;
 using System.Web.UI.WebControls;
 using System.Web.UI;
 using Qube.Web.Core;
@@ -111,6 +109,11 @@ namespace Qube.Web.UI
         public void SetValue(object v)
         {
             //throw new NotImplementedException("Can a FileUpload filename be set?");
+        }
+
+        public string GetFormattedValue()
+        {
+            return String.Format(FileName, DataFormatString);
         }
     }
 }
