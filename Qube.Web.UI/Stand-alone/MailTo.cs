@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace Qube.Web.UI
@@ -11,12 +12,13 @@ namespace Qube.Web.UI
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
-            this.Click += MailTo_Click;
+            this.CausesValidation = false;
+            this.Click += MailTo_Click;            
         }
 
         private void MailTo_Click(object sender, EventArgs e)
         {
-            HttpContext.Current.Response.Redirect("mailto:" + Address);
+            ((HtmlControl)Page.Master.FindControl("body")).Attributes.Add("onload", "setTimeout( function(){ window.location.assign('mailto:" + Address + "'); }, 500);");
         }
     }
 }
