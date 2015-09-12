@@ -3,6 +3,7 @@ using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Web.UI.WebControls;
+using System.Web.UI;
 
 namespace Qube.Web.UI
 {
@@ -60,6 +61,7 @@ namespace Qube.Web.UI
             ErrorMessage = String.IsNullOrEmpty(ErrorMessage) ? Lang["TextBoxErrorMessage"] : ErrorMessage;
             EmptyErrorMessage = String.IsNullOrEmpty(EmptyErrorMessage) ? Lang["TextBoxEmptyMessage"] : EmptyErrorMessage;
             LongErrorMessage = String.IsNullOrEmpty(LongErrorMessage) ? Lang["TextBoxLongMessage"] : LongErrorMessage;
+            DataField = String.IsNullOrEmpty(DataField) ? FieldName : DataField;
         }
 
         void cv_ServerValidate(object source, ServerValidateEventArgs args)

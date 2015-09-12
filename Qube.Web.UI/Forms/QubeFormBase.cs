@@ -8,6 +8,21 @@ using System.Web.UI.WebControls;
 
 namespace Qube.Web.UI
 {
+    public enum EQubeFormBaseFieldType
+    {
+        Alpha = 1,
+        Numeric,
+        Alphanumeric,
+        Date,
+        Currency,
+        DropDownList,
+        Checkbox,
+        File,
+        Password,
+
+        Custom
+    }
+
     public class QubeFormBase : HtmlCustomControl
     {
         public class QubeFormBaseSubmitArguments
@@ -102,7 +117,6 @@ namespace Qube.Web.UI
                 }
         }
     }
-
     public class QubeFormBasePanel : HtmlCustomControl
     {
         public bool IsCurrent { get; set; }
@@ -126,39 +140,103 @@ namespace Qube.Web.UI
             if (LoadControls != null)
                 LoadControls.Invoke(this, null);
         }
+    }
+    public class QubeFormBaseField : HtmlCustomControl
+    {
+        private QubeTextBox _tx;
+        private QubeCheckBox _cb;
+        private QubeFileUpload _file;
+        private QubeDropDownList _ddl;
+        private HtmlCustomControl _label;
+        private IQubeFormField fld = null;
+
+        public int MaxLength { get; set; }
+        public bool Required { get; set; }
+        public String FieldName { get; set; }
+        public String DataField { get; set; }
+        public String PlaceHolder { get; set; }
+        public EQubeFormBaseFieldType Type { get; set; }
+
+        public QubeFormBaseField() : base("div")
+        {
+            this.Init += QubeFormBaseField_Init;
+            this.Load += QubeFormBaseField_Load;
+            MaxLength = -1;
+            Required = false;
+        }
+
+        private void QubeFormBaseField_Init(object sender, EventArgs e)
+        {
+            _tx = new QubeTextBox();
+            _cb = new QubeCheckBox();
+            _file = new QubeFileUpload();
+            _ddl = new QubeDropDownList();
+            _label = new HtmlCustomControl("label");
+            if (MaxLength == -1)
+                MaxLength = 50;
+        }
+
+        private void QubeFormBaseField_Load(object sender, EventArgs e)
+        {
+            switch(Type)
+            {
+                case EQubeFormBaseFieldType.Alpha:
+                case EQubeFormBaseFieldType.Alphanumeric:
+                case EQubeFormBaseFieldType.Date:
+                case EQubeFormBaseFieldType.Numeric:
+                case EQubeFormBaseFieldType.Password:
+                    fld = _tx;                    
+                    break;
+                case EQubeFormBaseFieldType.Checkbox:
+                    fld = _cb;
+                    break;
+                case EQubeFormBaseFieldType.DropDownList:
+                    fld = _ddl;
+                    break;
+                case EQubeFormBaseFieldType.File:
+                    fld = _file;
+                    break;
+            }
+
+            if (Type != EQubeFormBaseFieldType.Custom)
+            {
+                PropertyInfo[] piSrc = this.GetType().GetProperties();
+                PropertyInfo[] piDst = fld.GetType().GetProperties();
+                foreach (PropertyInfo pd in piDst)
+                    foreach (PropertyInfo ps in piSrc)
+                        if (ps.Name == pd.Name)
+                            if (pd.CanWrite)
+                                pd.SetValue(fld, ps.GetValue(this, null), null);
+                ToolTip = String.Empty;
+
+                ((Control)fld).ID = "frm" + ((Control)fld).ID;
+                ((WebControl)fld).Attributes.Add("placeholder", PlaceHolder);
+                switch(Type)
+                {
+                    case EQubeFormBaseFieldType.Date:
+                        ((WebControl)fld).CssClass = "date";
+                        break;
+                    case EQubeFormBaseFieldType.Password:
+                        ((TextBox)fld).TextMode = TextBoxMode.Password;
+                        break;
+                }
+
+                Controls.Add((Control)fld);
+            }
+        }
 
         protected override void Render(HtmlTextWriter w)
         {
+            HtmlCustomControl span = new HtmlCustomControl("span");
             base.RenderBeginTag(w);
-
-            foreach (Control c in Controls)
+            if (FieldName != null)
             {
-                if (c.GetType().GetInterfaces().Contains(typeof(IQubeFormField)))
-                {
-                    HtmlCustomControl lbField = new HtmlCustomControl("label");
-                    lbField.Attributes["for"] = c.ClientID;
-                    lbField.Controls.Add(new Literal() { Text = ((IQubeFormField)c).FieldName + ":" });
-                    HtmlCustomControl span = new HtmlCustomControl("span");
-                    lbField.RenderControl(w);
-                    span.RenderBeginTag(w);
-                    c.RenderControl(w);
-                    span.RenderEndTag(w);
-                    continue;
-                }
-                else if (c.GetType() == typeof(Captcha))
-                {
-                    HtmlCustomControl lbField = new HtmlCustomControl("label");
-                    lbField.Controls.Add(new Literal() { Text = "&nbsp;" });
-                    HtmlCustomControl span = new HtmlCustomControl("span");
-                    lbField.RenderControl(w);
-                    span.RenderBeginTag(w);
-                    c.RenderControl(w);
-                    span.RenderEndTag(w);
-                }
-                else
-                    c.RenderControl(w);
+                _label.Controls.Add(new Literal() { Text = FieldName + ":" });
+                _label.RenderControl(w);
             }
-
+            span.RenderBeginTag(w);
+            base.RenderContents(w);
+            span.RenderEndTag(w);
             base.RenderEndTag(w);
         }
     }

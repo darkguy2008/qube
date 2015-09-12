@@ -72,7 +72,7 @@ namespace Qube.Web.UI
 
         private void cv_ServerValidate(object source, ServerValidateEventArgs args)
         {
-            if (Required && String.IsNullOrEmpty(SelectedItem.Value))
+            if (Required && (SelectedItem == null || String.IsNullOrEmpty(SelectedItem.Value)))
             {
                 args.IsValid = false;
                 cv.ErrorMessage = String.Format(EmptyErrorMessage, FieldName);

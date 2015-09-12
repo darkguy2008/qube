@@ -56,7 +56,7 @@ namespace Qube.Web.Core
                         if (childControl.GetType() == typeof(T))
                             _foundControls.Add((T)(object)childControl);
                         else
-                            FindChildControlsRecursive(childControl);
+                            FindChildControlsRecursive(childControl, explicitType);
                     }
                     else
                     {
@@ -77,7 +77,7 @@ namespace Qube.Web.Core
                             if(add)
                                 _foundControls.Add((T)(object)childControl);
                             else
-                                FindChildControlsRecursive(childControl);
+                                FindChildControlsRecursive(childControl, explicitType);
                         }
                     }
                 }
