@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -39,10 +41,19 @@ namespace Qube.Web.Core
             }
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            Page.DataBind();
+        }
+
         protected override void Render(HtmlTextWriter w)
         {
             String tick = DateTime.Now.Ticks.ToString();
-            String url = Page.ResolveClientUrl(Path);
+            if (Path == null)
+                Path = String.Empty;
+
+            String url = Page.ResolveClientUrl(HttpUtility.HtmlDecode(Path));
             if(!Cache)
                 if(url.Contains("?") || url.Contains("#"))
                     url = url + "&_t=" + tick;
@@ -66,7 +77,7 @@ namespace Qube.Web.Core
             }
 
             // http://madskristensen.net/post/remove-whitespace-from-your-aspnet-page
-            using (HtmlTextWriter hw = new HtmlTextWriter(new System.IO.StringWriter()))
+            using (HtmlTextWriter hw = new HtmlTextWriter(new StringWriter()))
             {
                 ctrl.RenderBeginTag(hw);
                 ctrl.RenderEndTag(hw);
@@ -74,6 +85,7 @@ namespace Qube.Web.Core
                 html = Regex.Replace(html, @"(?<=[^])\t{2,}|(?<=[>])\s{2,}(?=[<])|(?<=[>])\s{2,11}(?=[<])|(?=[\n])\s{2,}", string.Empty);
                 html = Regex.Replace(html, @"[ \f\r\t\v]?([\n\xFE\xFF/{}[\];,<>*%&|^!~?:=])[\f\r\t\v]?", "$1");
                 html = html.Replace(";\n", ";");
+                html = HttpUtility.HtmlDecode(html);
                 w.Write(html.Trim());
             }
         }

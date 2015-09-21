@@ -23,7 +23,11 @@ namespace Qube.WebServices
 
         public void ProcessRequest(HttpContext cx)
         {
-            qs = new QSManager(cx.Request.QueryString);
+            if (cx.Request.HttpMethod == "GET")
+                qs = new QSManager(cx.Request.QueryString);
+            else if (cx.Request.HttpMethod == "POST")
+                qs = new QSManager(cx.Request.Form);
+
             if (!qs.Contains("op"))
             {
                 WriteJSON(cx, new { Result = -1 });
@@ -43,7 +47,7 @@ namespace Qube.WebServices
                     {
                         WriteJSON(cx, new
                         {
-                            StatusCode = 3,
+                            StatusCode = -999,
                             Message = e.Message + (e.InnerException != null ? (", " + e.InnerException.Message) : String.Empty)
                         });
                     }
@@ -52,7 +56,7 @@ namespace Qube.WebServices
 
         public object Run(String fnName, QSManager qs)
         {
-            List<String> args = new List<String>();
+            List<object> args = new List<object>();
             MethodInfo fn = this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name.ToLowerInvariant().Trim() == fnName.ToLowerInvariant().Trim()).SingleOrDefault();
             if (fn == null)
                 throw new Exception("Invalid function name");
@@ -61,7 +65,7 @@ namespace Qube.WebServices
             {
                 if (!qs.Contains(pi.Name))
                     throw new Exception("The parameter " + pi.Name + " does not exist");
-                args.Add(qs[pi.Name]);
+                args.Add(Convert.ChangeType(qs[pi.Name], pi.ParameterType));
             }
 
             return fn.Invoke(this, args.ToArray());

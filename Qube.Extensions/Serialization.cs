@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Web.Script.Serialization;
 using System.Data;
+using System.IO;
+using System.Text;
+using System.Runtime.Serialization.Json;
 
 namespace Qube.Extensions
 {
@@ -37,6 +40,16 @@ namespace Qube.Extensions
             rv.Add(row);
 
             return rv.ToJSON();            
+        }
+
+        public static T FromJSON<T>(string json)
+        {
+            T obj = Activator.CreateInstance<T>();
+            MemoryStream ms = new MemoryStream(Encoding.Unicode.GetBytes(json));
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
+            obj = (T)serializer.ReadObject(ms);
+            ms.Close();
+            return obj;
         }
     }
 }
