@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DateTime.cs" />
     <Compile Include="Reflection.cs" />
     <Compile Include="Serialization.cs" />
     <Compile Include="XML.cs" />
