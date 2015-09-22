@@ -14,6 +14,7 @@ namespace Qube.Web.UI
 
         public bool RenderFieldsOuterDiv { get; set; }
         public String SubmitButtonText { get; set; }
+        public bool SubmitEnabled { get; set; }
         public event QubeStandardFormBeforeSubmitEventHandler BeforeSubmit;
         public event QubeStandardFormAfterSubmitEventHandler AfterSubmit;
 
@@ -59,6 +60,7 @@ namespace Qube.Web.UI
         public QubeStandardPanel()
         {
             LoadControls += QubeStandardPanel_LoadControls;
+            RenderControls += QubeStandardPanel_RenderControls;
         }
 
         protected override void OnInit(EventArgs e)
@@ -71,7 +73,7 @@ namespace Qube.Web.UI
 
             btnSubmit.ID = String.Format("{0}_{1}_{2}", Parent.ID, ID, "btnSubmit");       
             btnSubmit.CausesValidation = true;            
-            btnSubmit.Click += BtnSubmit_Click;
+            btnSubmit.Click += BtnSubmit_Click;            
         }
 
         protected override void Render(HtmlTextWriter w)
@@ -129,6 +131,11 @@ namespace Qube.Web.UI
             btnSubmit.Text = ((QubeStandardForm)FormParent).SubmitButtonText;
             Controls.Add(new Panel() { CssClass = "clear" });
             Controls.Add(btnSubmit);
+        }
+
+        private void QubeStandardPanel_RenderControls(object sender, EventArgs e)
+        {
+            btnSubmit.Enabled = ((QubeStandardForm)Parent).SubmitEnabled;
         }
 
         private void BtnSubmit_Click(object Submiter, EventArgs e)

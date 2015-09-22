@@ -6,6 +6,7 @@ using Qube.Web.Core;
 using Qube.Extensions;
 using System.Reflection;
 using System.IO;
+using System.Text;
 
 namespace Qube.WebServices
 {
@@ -28,8 +29,10 @@ namespace Qube.WebServices
             else if (cx.Request.HttpMethod == "POST")
                 qs = new QSManager(cx.Request.Form);
 
+            cx.Response.ContentEncoding = Encoding.UTF8;
+
             if (!qs.Contains("op"))
-            {
+            {                
                 WriteJSON(cx, new { Result = -1 });
                 cx.Response.End();
             }

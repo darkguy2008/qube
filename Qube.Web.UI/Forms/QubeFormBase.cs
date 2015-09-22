@@ -123,6 +123,7 @@ namespace Qube.Web.UI
         protected QubeFormBase FormParent;
 
         public event EventHandler LoadControls;
+        public event EventHandler RenderControls;
 
         public QubeFormBasePanel() : base("div")
         {
@@ -139,6 +140,13 @@ namespace Qube.Web.UI
             base.OnLoad(e);
             if (LoadControls != null)
                 LoadControls.Invoke(this, null);
+        }
+
+        protected override void OnPreRender(EventArgs e)
+        {
+            base.OnPreRender(e);
+            if (RenderControls != null)
+                RenderControls.Invoke(this, null);
         }
     }
     public class QubeFormBaseField : HtmlCustomControl

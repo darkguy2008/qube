@@ -44,7 +44,7 @@ namespace Qube.Web.Core
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            Page.DataBind();
+            //Page.DataBind();
         }
 
         protected override void Render(HtmlTextWriter w)
