@@ -21,6 +21,7 @@ namespace Qube.Web.UI
         public QubeStandardForm()
         {
             this.FormLoad += QubeStandardForm_Load;
+            SubmitEnabled = true;
         }
 
         private void QubeStandardForm_Load(object Submiter, EventArgs e)
