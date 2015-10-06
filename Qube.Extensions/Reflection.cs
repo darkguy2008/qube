@@ -1,8 +1,23 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading;
 
 namespace Qube.Extensions
 {
+    public static class Object
+    {
+        public static void CopyObject(this object src, object dst)
+        {
+            PropertyInfo[] piSrc = src.GetType().GetProperties();
+            PropertyInfo[] piDst = dst.GetType().GetProperties();
+            foreach (PropertyInfo pd in piDst)
+                foreach (PropertyInfo ps in piSrc)
+                    if (ps.Name == pd.Name)
+                        if (pd.CanWrite)
+                            pd.SetValue(dst, ps.GetValue(src, null), null);
+        }
+    }
+
     public static class Actions
     {
         public static void Retry(Action action, TimeSpan sleepPeriod, int retryCount = 3)
@@ -22,4 +37,5 @@ namespace Qube.Extensions
             }
         }
     }
+
 }
