@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI;
 
-namespace Qube.Web.Core
+namespace Qube.Extensions
 {
-    public static class Extensions
+    public static class QubeExtensions
     {
 
         public static List<Control> GetControls(this Page p)
@@ -16,7 +16,7 @@ namespace Qube.Web.Core
             return rv;
         }
 
-        public static Control FindControlRecursive(Control root, string id)
+        public static Control FindControlRecursive(this Control root, string id)
         {
             if (root.ID == id)
             {

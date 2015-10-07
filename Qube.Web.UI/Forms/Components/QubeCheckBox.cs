@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Qube.Web.Core;
+using System;
 using System.Web.UI.WebControls;
 
 namespace Qube.Web.UI
@@ -6,18 +7,29 @@ namespace Qube.Web.UI
     public class QubeCheckBox : CheckBox, IQubeFormField
     {
         // Interface members
-        public String FieldName { get; set; }
-        public String DataField { get; set; }
-        public String DataFormatString { get; set; }
+        public bool RenderLabel { get; set; }
+        public string DisplayName { get; set; }
+        public string DisplayFormat { get; set; }
+        public string DataField { get; set; }
+        public string DataFormatString { get; set; }
+        public string OnClientValueChanged { get; set; }
 
         public QubeCheckBox()
         {
+            RenderLabel = false;
         }
 
         protected override void Render(System.Web.UI.HtmlTextWriter w)
         {
-            String text = Text;
-            Text = String.Empty;
+            string text = Text;
+            Text = string.Empty;
+
+            if (RenderLabel && !string.IsNullOrEmpty(DisplayName))
+            {
+                HtmlCustomControl lbl = new HtmlCustomControl("label");
+                lbl.Controls.Add(new Literal() { Text = DisplayName + ":" });
+                lbl.RenderControl(w);
+            }
 
             if (TextAlign == TextAlign.Left)
             {
@@ -45,7 +57,8 @@ namespace Qube.Web.UI
 
         public string GetFormattedValue()
         {
-            return String.Format(Checked.ToString(), DataFormatString);
+            return string.Format(Checked.ToString(), DataFormatString);
         }
+
     }
 }

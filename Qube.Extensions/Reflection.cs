@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Reflection;
 using System.Threading;
+using System.Linq;
 
 namespace Qube.Extensions
 {
     public static class Object
     {
-        public static void CopyObject(this object src, object dst)
+        public static void CopyObject(this object src, object dst, string[] propsToCopy = null)
         {
             PropertyInfo[] piSrc = src.GetType().GetProperties();
             PropertyInfo[] piDst = dst.GetType().GetProperties();
             foreach (PropertyInfo pd in piDst)
                 foreach (PropertyInfo ps in piSrc)
                     if (ps.Name == pd.Name)
-                        if (pd.CanWrite)
-                            pd.SetValue(dst, ps.GetValue(src, null), null);
+                        if(propsToCopy == null || (propsToCopy != null && propsToCopy.Contains(pd.Name)))
+                            if (pd.CanWrite)
+                                pd.SetValue(dst, ps.GetValue(src, null), null);
         }
     }
 

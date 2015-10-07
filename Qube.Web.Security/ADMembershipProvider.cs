@@ -8,8 +8,8 @@ namespace Italcambio.Web.Security
 {
     public class ADMembershipProvider : MembershipProvider
     {
-        public String LDAPUser { get; set; }
-        public String LDAPPass { get; set; }
+        public string LDAPUser { get; set; }
+        public string LDAPPass { get; set; }
 
         #region Not Implemented
         public override string ApplicationName

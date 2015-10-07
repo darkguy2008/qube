@@ -1,0 +1,7 @@
+﻿TextBoxErrorMessage      = El campo <strong>{0}</strong> tiene datos inválidos
+TextBoxEmptyMessage      = El campo <strong>{0}</strong> es requerido
+TextBoxLongMessage       = El campo <strong>{0}</strong> es demasiado largo
+FileUploadEmptyMessage   = El campo <strong>{0}</strong> es requerido
+FileUploadErrorMessage   = El campo <strong>{0}</strong> no permite subir ese tipo de archivo
+DropDownListEmptyMessage = El campo <strong>{0}</strong> es requerido
+CommonSubmit = Enviar

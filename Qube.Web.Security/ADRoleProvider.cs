@@ -71,7 +71,7 @@ namespace Italcambio.Web.Security
         {
             try
             {
-                List<String> rv = new List<String>();
+                List<string> rv = new List<string>();
                 DirectoryEntry deGetCN = new DirectoryEntry(WebConfigurationManager.ConnectionStrings["LDAP"].ConnectionString);
                 DirectorySearcher dsGet = new DirectorySearcher(deGetCN);
                 dsGet.Filter = "(SAMAccountName=" + username + ")";
@@ -86,7 +86,7 @@ namespace Italcambio.Web.Security
                 {
                     for (int i = 0; i < sr.Properties["memberOf"].Count; i++)
                     {
-                        String result = (String)sr.Properties["memberOf"][i];
+                        string result = (string)sr.Properties["memberOf"][i];
                         int ixEqual = result.IndexOf("=", 1);
                         int ixComma = result.IndexOf(",", 1);
                         if (ixEqual == -1)

@@ -74,7 +74,7 @@ namespace Qube.Drawing
         }
 
         // http://stackoverflow.com/questions/1940581/c-sharp-image-resizing-to-different-size-while-preserving-aspect-ratio/2001462#2001462
-        public static Image ResizeAndCenter(String filename, int Width, int Height, Color backgroundColor)
+        public static Image ResizeAndCenter(string filename, int Width, int Height, Color backgroundColor)
         {
             using (Image im = Image.FromFile(filename))
                 return ResizeAndCenter(im, Width, Height, backgroundColor);

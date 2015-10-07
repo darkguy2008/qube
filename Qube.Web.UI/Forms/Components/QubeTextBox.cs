@@ -3,6 +3,8 @@ using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Web.UI.WebControls;
+using System.Web.UI;
+using Qube.Web.Core;
 
 namespace Qube.Web.UI
 {
@@ -12,28 +14,42 @@ namespace Qube.Web.UI
         Alpha = 1,
         Numeric,
         Alphanumeric,
-        Name,
-        Email,
         Date,
+        Currency,
+        DropDownList,
+        Checkbox,
+        File,
         Password,
-        Phone
+        Name,
+        Phone,
+        Email,
+
+        Custom
     }
 
     public class QubeTextBox : TextBox, IQubeFormField
     {
         private CustomValidator cv;
         public bool Required { get; set; }
-        public String ErrorMessage { get; set; }
-        public String EmptyErrorMessage { get; set; }
-        public String LongErrorMessage { get; set; }
+        public string ErrorMessage { get; set; }
+        public string EmptyErrorMessage { get; set; }
+        public string LongErrorMessage { get; set; }
         public EValidationType ValidationType { get; set; }
 
         // Interface members
-        public String FieldName { get; set; }
-        public String DataField { get; set; }
-        public String DataFormatString { get; set; }
+        public bool RenderLabel { get; set; }
+        public string DisplayName { get; set; }
+        public string DisplayFormat { get; set; }
+        public string DataField { get; set; }
+        public string DataFormatString { get; set; }
+        public string OnClientValueChanged { get; set; }
 
         private GlobalizedStrings Lang;
+
+        public QubeTextBox()
+        {
+            RenderLabel = false;
+        }
 
         protected override void OnInit(EventArgs e)
         {
@@ -57,29 +73,59 @@ namespace Qube.Web.UI
         protected override void OnLoad(EventArgs e)
         {            
             base.OnLoad(e);
-            ErrorMessage = String.IsNullOrEmpty(ErrorMessage) ? Lang["TextBoxErrorMessage"] : ErrorMessage;
-            EmptyErrorMessage = String.IsNullOrEmpty(EmptyErrorMessage) ? Lang["TextBoxEmptyMessage"] : EmptyErrorMessage;
-            LongErrorMessage = String.IsNullOrEmpty(LongErrorMessage) ? Lang["TextBoxLongMessage"] : LongErrorMessage;
-            DataField = String.IsNullOrEmpty(DataField) ? FieldName : DataField;
+            ErrorMessage = string.IsNullOrEmpty(ErrorMessage) ? Lang["TextBoxErrorMessage"] : ErrorMessage;
+            EmptyErrorMessage = string.IsNullOrEmpty(EmptyErrorMessage) ? Lang["TextBoxEmptyMessage"] : EmptyErrorMessage;
+            LongErrorMessage = string.IsNullOrEmpty(LongErrorMessage) ? Lang["TextBoxLongMessage"] : LongErrorMessage;
+            DataField = string.IsNullOrEmpty(DataField) ? DisplayName : DataField;
+
+            if (!string.IsNullOrEmpty(OnClientValueChanged))
+            {
+                Page.ClientScript.RegisterStartupScript(Page.GetType(), "change_fld" + ClientID,
+                    "$('#" + ClientID + "').on('keydown', function() { " + OnClientValueChanged + "(); });" +
+                    "$('#" + ClientID + "').on('blur', function() { " + OnClientValueChanged + "(); });",
+                    true
+                );
+            }
+
+            if(ValidationType == EValidationType.Currency)
+            {
+                string opts = "";
+                switch (DisplayFormat.ToLowerInvariant().Trim())
+                {
+                    case "vef":
+                        opts = "{ aSep: '.', aDec: ',', aSign: ' Bs.F', pSign: 's'}";
+                        break;
+                    case "usd":
+                        opts = "{ aSep: ',', aDec: '.', aSign: '$ ', pSign: 'p'}";
+                        break;
+                }
+                if (!string.IsNullOrEmpty(DisplayFormat))
+                {
+                    Page.ClientScript.RegisterStartupScript(Page.GetType(), "format_fld" + ClientID,
+                        string.Format("$('#{0}').autoNumeric('init', {1});", ClientID, opts),
+                        true
+                    );
+                }
+            }
         }
 
         void cv_ServerValidate(object source, ServerValidateEventArgs args)
         {
-            if (Required && String.IsNullOrWhiteSpace(args.Value))
+            if (Required && string.IsNullOrWhiteSpace(args.Value))
             {
                 args.IsValid = false;
-                cv.ErrorMessage = String.Format(EmptyErrorMessage, FieldName);
+                cv.ErrorMessage = string.Format(EmptyErrorMessage, DisplayName);
                 return;
             }
 
             if (args.Value.Length > MaxLength)
             {
                 args.IsValid = false;
-                cv.ErrorMessage = String.Format(LongErrorMessage, FieldName);
+                cv.ErrorMessage = string.Format(LongErrorMessage, DisplayName);
                 return;
             }
 
-            if (!String.IsNullOrWhiteSpace(args.Value))
+            if (!string.IsNullOrWhiteSpace(args.Value))
             {
                 switch (ValidationType)
                 {
@@ -118,7 +164,7 @@ namespace Qube.Web.UI
                         break;
                 }
                 if (!args.IsValid)
-                    cv.ErrorMessage = String.Format(ErrorMessage, FieldName);
+                    cv.ErrorMessage = string.Format(ErrorMessage, DisplayName);
             }
             
         }
@@ -130,7 +176,7 @@ namespace Qube.Web.UI
 
         public void SetValue(object v)
         {
-            Text = v == null ? String.Empty : v.ToString();
+            Text = v == null ? string.Empty : v.ToString();
         }
 
         public string GetFormattedValue()
@@ -140,8 +186,21 @@ namespace Qube.Web.UI
                 case EValidationType.Date:
                     return DateTime.ParseExact(Text, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None).ToString(DataFormatString);
                 default:
-                    return String.Format(Text, DataFormatString);
+                    return string.Format(Text, DataFormatString);
             }
+        }
+
+        protected override void Render(HtmlTextWriter w)
+        {
+            if(RenderLabel && !string.IsNullOrEmpty(DisplayName))
+            {
+                HtmlCustomControl lbl = new HtmlCustomControl("label");
+                lbl.Controls.Add(new Literal() { Text = DisplayName + ":" });
+                lbl.RenderControl(w);
+                base.Render(w);
+            }
+            else
+                base.Render(w);
         }
     }
 

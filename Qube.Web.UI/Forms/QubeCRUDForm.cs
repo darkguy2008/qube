@@ -1,4 +1,5 @@
-﻿using Qube.Web.Core;
+﻿using Qube.Extensions;
+using Qube.Web.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,18 +21,18 @@ namespace Qube.Web.UI
     public class QubeCRUDForm : HtmlCustomControl
     {
         public EPanelType FormMode { get; set; }
-        public String NewButtonText { get; set; }
-        public String UpdateButtonText { get; set; }
-        public String DeleteButtonText { get; set; }
-        public String CancelButtonText { get; set; }
-        private String VSID { get; set; }
-        public String Key
+        public string NewButtonText { get; set; }
+        public string UpdateButtonText { get; set; }
+        public string DeleteButtonText { get; set; }
+        public string CancelButtonText { get; set; }
+        private string VSID { get; set; }
+        public string Key
         {
-            get { return (String)ViewState[VSID + "key"]; }
+            get { return (string)ViewState[VSID + "key"]; }
             set { ViewState[VSID + "key"] = value; }
         }
 
-        public delegate void QubeCRUDFormOperationEventHandler(QubeCRUDForm sender, Dictionary<String, IQubeFormField> fields);
+        public delegate void QubeCRUDFormOperationEventHandler(QubeCRUDForm sender, Dictionary<string, IQubeFormField> fields);
         public event QubeCRUDFormOperationEventHandler FirstLoad;
         public event QubeCRUDFormOperationEventHandler Inserting;
         public event QubeCRUDFormOperationEventHandler Updating;
@@ -57,7 +58,7 @@ namespace Qube.Web.UI
 
         protected override void OnPreRender(EventArgs e)
         {
-            Extensions.ControlFinder<QubeCRUDFormPanel> cf = new Extensions.ControlFinder<QubeCRUDFormPanel>();
+            QubeExtensions.ControlFinder<QubeCRUDFormPanel> cf = new QubeExtensions.ControlFinder<QubeCRUDFormPanel>();
             cf.FindChildControlsRecursive(this);
             List<QubeCRUDFormPanel> Panels = cf.FoundControls.ToList();
 
@@ -69,19 +70,19 @@ namespace Qube.Web.UI
 
         public Panel GetCurrentPanel()
         {
-            Extensions.ControlFinder<QubeCRUDFormPanel> cf = new Extensions.ControlFinder<QubeCRUDFormPanel>();
+            QubeExtensions.ControlFinder<QubeCRUDFormPanel> cf = new QubeExtensions.ControlFinder<QubeCRUDFormPanel>();
             cf.FindChildControlsRecursive(this);
             return cf.FoundControls.Where(x => x.Types.HasFlag(FormMode)).First();
         }
 
-        public Dictionary<String, IQubeFormField> GetFields()
+        public Dictionary<string, IQubeFormField> GetFields()
         {
             Panel p = GetCurrentPanel();
 
-            Extensions.ControlFinder<IQubeFormField> cfFields = new Extensions.ControlFinder<IQubeFormField>();
+            QubeExtensions.ControlFinder<IQubeFormField> cfFields = new QubeExtensions.ControlFinder<IQubeFormField>();
             cfFields.FindChildControlsRecursive(p, false);
 
-            Dictionary<String, IQubeFormField> rv = new Dictionary<String, IQubeFormField>();
+            Dictionary<string, IQubeFormField> rv = new Dictionary<string, IQubeFormField>();
             foreach (Control c in cfFields.FoundControls)
                 rv[((IQubeFormField)c).DataField] = c as IQubeFormField;
 
@@ -133,7 +134,7 @@ namespace Qube.Web.UI
             InvokeModeChanged();
         }
 
-        public static void FieldsToObject(object dst, Dictionary<String, IQubeFormField> fields)
+        public static void FieldsToObject(object dst, Dictionary<string, IQubeFormField> fields)
         {
             PropertyInfo[] pi = dst.GetType().GetProperties();
             foreach (PropertyInfo p in pi)
@@ -145,7 +146,7 @@ namespace Qube.Web.UI
                 }
         }
 
-        public static void ObjectToFields(object src, Dictionary<String, IQubeFormField> fields)
+        public static void ObjectToFields(object src, Dictionary<string, IQubeFormField> fields)
         {
             PropertyInfo[] pi = src.GetType().GetProperties();
             foreach (PropertyInfo p in pi)
@@ -154,7 +155,7 @@ namespace Qube.Web.UI
                     object v = p.GetValue(src, null);
                     if (v != null)
                         if (v.GetType() == typeof(DateTime))
-                            if (!String.IsNullOrEmpty(fields[p.Name].DataFormatString))
+                            if (!string.IsNullOrEmpty(fields[p.Name].DataFormatString))
                                 v = ((DateTime)v).ToString(fields[p.Name].DataFormatString);
                     fields[p.Name].SetValue(v);
                 }
@@ -178,17 +179,17 @@ namespace Qube.Web.UI
         {
             base.OnInit(e);
 
-            btnNew.ID = String.Format("{0}_{1}_{2}", Parent.ID, ID, "btnCreate");
+            btnNew.ID = string.Format("{0}_{1}_{2}", Parent.ID, ID, "btnCreate");
             btnNew.CausesValidation = false;
             btnNew.Click += BtnCreate_Click;
 
-            btnUpdate.ID = String.Format("{0}_{1}_{2}", Parent.ID, ID, "btnUpdate");
+            btnUpdate.ID = string.Format("{0}_{1}_{2}", Parent.ID, ID, "btnUpdate");
             btnUpdate.Click += BtnUpdate_Click;
 
-            btnDelete.ID = String.Format("{0}_{1}_{2}", Parent.ID, ID, "btnDelete");
+            btnDelete.ID = string.Format("{0}_{1}_{2}", Parent.ID, ID, "btnDelete");
             btnDelete.Click += BtnDelete_Click;
 
-            btnCancel.ID = String.Format("{0}_{1}_{2}", Parent.ID, ID, "btnCancel");
+            btnCancel.ID = string.Format("{0}_{1}_{2}", Parent.ID, ID, "btnCancel");
             btnCancel.CausesValidation = false;
             btnCancel.Click += BtnCancel_Click;
         }
@@ -228,7 +229,7 @@ namespace Qube.Web.UI
                 {
                     HtmlCustomControl lbField = new HtmlCustomControl("label");
                     lbField.Attributes["for"] = c.ClientID;
-                    lbField.Controls.Add(new Literal() { Text = ((IQubeFormField)c).FieldName + ":" });
+                    lbField.Controls.Add(new Literal() { Text = ((IQubeFormField)c).DisplayName + ":" });
                     lbField.RenderControl(w);
                     c.RenderControl(w);
                     continue;

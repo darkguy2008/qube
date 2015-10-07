@@ -38,7 +38,7 @@ namespace Qube.WebServices
             }
             else
             {
-                String op = qs["op"];
+                string op = qs["op"];
                 qs.Remove("op");
                 Request = cx.Request;
                 using (Post = new StreamReader(cx.Request.InputStream))
@@ -51,13 +51,13 @@ namespace Qube.WebServices
                         WriteJSON(cx, new
                         {
                             StatusCode = -999,
-                            Message = e.Message + (e.InnerException != null ? (", " + e.InnerException.Message) : String.Empty)
+                            Message = e.Message + (e.InnerException != null ? (", " + e.InnerException.Message) : string.Empty)
                         });
                     }
             }
         }
 
-        public object Run(String fnName, QSManager qs)
+        public object Run(string fnName, QSManager qs)
         {
             List<object> args = new List<object>();
             MethodInfo fn = this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name.ToLowerInvariant().Trim() == fnName.ToLowerInvariant().Trim()).SingleOrDefault();

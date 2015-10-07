@@ -57,6 +57,10 @@
     <Compile Include="Forms\Components\QubeTextBox.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Qube.Extensions\Qube.Extensions.csproj">
+      <Project>{e5fcaf31-082a-411e-8feb-6c524ae60c88}</Project>
+      <Name>Qube.Extensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Qube.Globalization\Qube.Globalization.csproj">
       <Project>{7bb9d0a3-33e3-4e7e-9ee3-0208c94425b2}</Project>
       <Name>Qube.Globalization</Name>

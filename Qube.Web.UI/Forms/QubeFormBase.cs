@@ -1,4 +1,5 @@
-﻿using Qube.Web.Core;
+﻿using Qube.Extensions;
+using Qube.Web.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,9 @@ namespace Qube.Web.UI
         Checkbox,
         File,
         Password,
+        Name,
+        Phone,
+        Email,
 
         Custom
     }
@@ -27,12 +31,12 @@ namespace Qube.Web.UI
     {
         public class QubeFormBaseSubmitArguments
         {
-            public Dictionary<String, IQubeFormField> Fields { get; set; }
+            public Dictionary<string, IQubeFormField> Fields { get; set; }
             public bool Success { get; set; }
             public bool Cancel { get; set; }
         }
         public delegate void QubeFormBaseSubmitEventHandler(QubeFormBase sender, QubeFormBaseSubmitArguments args);
-        public delegate void QubeFormBaseOperationEventHandler(QubeFormBase sender, Dictionary<String, IQubeFormField> fields);
+        public delegate void QubeFormBaseOperationEventHandler(QubeFormBase sender, Dictionary<string, IQubeFormField> fields);
         public event EventHandler FormLoad;
         public event QubeFormBaseOperationEventHandler FirstLoad;
         public event QubeFormBaseSubmitEventHandler Submit;
@@ -68,34 +72,34 @@ namespace Qube.Web.UI
 
         public Panel GetCurrentPanel()
         {
-            Extensions.ControlFinder<QubeFormBasePanel> cf = new Extensions.ControlFinder<QubeFormBasePanel>();
+            QubeExtensions.ControlFinder<QubeFormBasePanel> cf = new QubeExtensions.ControlFinder<QubeFormBasePanel>();
             cf.FindChildControlsRecursive(this, false);
             return cf.FoundControls.Where(x => x.IsCurrent).Single();
         }
 
-        public Dictionary<String, IQubeFormField> GetFields()
+        public Dictionary<string, IQubeFormField> GetFields()
         {
             Panel p = GetCurrentPanel();
 
-            Extensions.ControlFinder<IQubeFormField> cfFields = new Extensions.ControlFinder<IQubeFormField>();
+            QubeExtensions.ControlFinder<IQubeFormField> cfFields = new QubeExtensions.ControlFinder<IQubeFormField>();
             cfFields.FindChildControlsRecursive(p, false);
 
-            Extensions.ControlFinder<QubeFormBaseField> cfBaseFields = new Extensions.ControlFinder<QubeFormBaseField>();
+            QubeExtensions.ControlFinder<QubeFormBaseField> cfBaseFields = new QubeExtensions.ControlFinder<QubeFormBaseField>();
             cfBaseFields.FindChildControlsRecursive(p, false);
 
-            Dictionary<String, IQubeFormField> rv = new Dictionary<String, IQubeFormField>();
+            Dictionary<string, IQubeFormField> rv = new Dictionary<string, IQubeFormField>();
             foreach (Control c in cfFields.FoundControls)
-                if(!String.IsNullOrEmpty(((IQubeFormField)c).DataField))
+                if(!string.IsNullOrEmpty(((IQubeFormField)c).DataField))
                     rv[((IQubeFormField)c).DataField] = c as IQubeFormField;
 
             foreach (Control c in cfBaseFields.FoundControls)
-                if (!String.IsNullOrEmpty(((QubeFormBaseField)c).DataField))
+                if (!string.IsNullOrEmpty(((QubeFormBaseField)c).DataField))
                     rv[((QubeFormBaseField)c).DataField] = ((QubeFormBaseField)c).fld as IQubeFormField;
 
             return rv;
         }
 
-        public static void FieldsToObject(object dst, Dictionary<String, IQubeFormField> fields)
+        public static void FieldsToObject(object dst, Dictionary<string, IQubeFormField> fields)
         {
             PropertyInfo[] pi = dst.GetType().GetProperties();
             foreach (PropertyInfo p in pi)
@@ -107,7 +111,7 @@ namespace Qube.Web.UI
                 }
         }
 
-        public static void ObjectToFields(object src, Dictionary<String, IQubeFormField> fields)
+        public static void ObjectToFields(object src, Dictionary<string, IQubeFormField> fields)
         {
             PropertyInfo[] pi = src.GetType().GetProperties();
             foreach (PropertyInfo p in pi)
@@ -117,7 +121,7 @@ namespace Qube.Web.UI
                     if (v != null)
                     {
                         if (v.GetType() == typeof(DateTime))
-                            if (!String.IsNullOrEmpty(fields[p.Name].DataFormatString))
+                            if (!string.IsNullOrEmpty(fields[p.Name].DataFormatString))
                                 v = ((DateTime)v).ToString(fields[p.Name].DataFormatString);
                     }
                     fields[p.Name].SetValue(v);
@@ -158,41 +162,31 @@ namespace Qube.Web.UI
     }
     public class QubeFormBaseField : HtmlCustomControl
     {
-        private QubeTextBox _tx;
-        private QubeCheckBox _cb;
-        private QubeFileUpload _file;
-        private QubeDropDownList _ddl;
-        private HtmlCustomControl _label;
-        public IQubeFormField fld = null;
 
         public int MaxLength { get; set; }
         public bool Required { get; set; }
-        public String FieldName { get; set; }
-        public String DataField { get; set; }
-        public String PlaceHolder { get; set; }
-        public String DisplayFormat { get; set; }
-        public String ValueFormat { get; set; }
         public bool ReadOnly { get; set; }
-        public String OnClientValueChanged { get; set; }
+        public string DataField { get; set; }
+        public string DataFormat { get; set; }
+        public string DisplayName { get; set; }
+        public string DisplayFormat { get; set; }
+        public string PlaceHolder { get; set; }
+        public string OnClientValueChanged { get; set; }
         public EQubeFormBaseFieldType Type { get; set; }
 
+        public WebControl fld;
+        private HtmlCustomControl lbl = new HtmlCustomControl("label");
+
         public QubeFormBaseField() : base("div")
-        {            
-            this.Init += QubeFormBaseField_Init;
-            this.Load += QubeFormBaseField_Load;
+        {
             MaxLength = -1;
             Required = false;
-            DisplayFormat = String.Empty;
-            ValueFormat = String.Empty;
         }
 
-        private void QubeFormBaseField_Init(object sender, EventArgs e)
+        protected override void OnInit(EventArgs e)
         {
-            _tx = new QubeTextBox();
-            _cb = new QubeCheckBox();
-            _file = new QubeFileUpload();
-            _ddl = new QubeDropDownList();
-            _label = new HtmlCustomControl("label");
+            base.OnInit(e);
+
             if (MaxLength == -1)
                 MaxLength = 50;
 
@@ -204,132 +198,64 @@ namespace Qube.Web.UI
                 case EQubeFormBaseFieldType.Numeric:
                 case EQubeFormBaseFieldType.Password:
                 case EQubeFormBaseFieldType.Currency:
-                    fld = _tx;
-                    ((QubeTextBox)fld).ReadOnly = ReadOnly;
+                    fld = new QubeTextBox();
+                    ((QubeTextBox)fld).ValidationType = (EValidationType)Type;
+                    if (Type == EQubeFormBaseFieldType.Date)
+                        fld.CssClass = "date";
+                    if (Type == EQubeFormBaseFieldType.Password)
+                        ((QubeTextBox)fld).TextMode = TextBoxMode.Password;
                     break;
                 case EQubeFormBaseFieldType.Checkbox:
-                    fld = _cb;
-                    ((QubeCheckBox)fld).Enabled = !ReadOnly;
+                    fld = new QubeCheckBox();
                     break;
                 case EQubeFormBaseFieldType.DropDownList:
-                    fld = _ddl;
-                    ((QubeDropDownList)fld).Enabled = !ReadOnly;
+                    fld = new QubeDropDownList();
                     break;
                 case EQubeFormBaseFieldType.File:
-                    fld = _file;
-                    ((QubeFileUpload)fld).Enabled = !ReadOnly;
+                    fld = new QubeFileUpload();
                     break;
             }
-        }
 
-        private void QubeFormBaseField_Load(object sender, EventArgs e)
-        {
-            if (Type != EQubeFormBaseFieldType.Custom)
+            if (fld != null)
             {
-                PropertyInfo[] piSrc = this.GetType().GetProperties();
-                PropertyInfo[] piDst = fld.GetType().GetProperties();
-                foreach (PropertyInfo pd in piDst)
-                    foreach (PropertyInfo ps in piSrc)
-                        if (ps.Name == pd.Name)
-                            if (pd.CanWrite)
-                                pd.SetValue(fld, ps.GetValue(this, null), null);
-                ToolTip = String.Empty;
-
-                ((Control)fld).ID = "frm" + ((Control)fld).ID;
-                ((WebControl)fld).Attributes.Add("placeholder", PlaceHolder);
-                switch (Type)
+                fld.ID = "frm" + ID;
+                this.CopyObject(fld, new string[]
                 {
-                    case EQubeFormBaseFieldType.Date:
-                        ((WebControl)fld).CssClass = "date";
-                        break;
-                    case EQubeFormBaseFieldType.Password:
-                        ((TextBox)fld).TextMode = TextBoxMode.Password;
-                        break;
-                }
+                "MaxLength",
+                "Required",
+                "DataField",
+                "DataFormat",
+                "DisplayName",
+                "DisplayFormat",
+                "PlaceHolder",
+                "OnClientValueChanged",
+                "Type",
+                "ToolTip"
+                });
 
-                Controls.Add((Control)fld);
+                fld.Attributes.Add("placeholder", PlaceHolder);
+                if (ReadOnly)
+                    fld.Attributes.Add("readonly", "readonly");
 
-                if (Type != EQubeFormBaseFieldType.Custom)
-                {
-                    switch (Type)
-                    {
-                        case EQubeFormBaseFieldType.Currency:
-                            String opts = "";
-                            switch (DisplayFormat.ToLowerInvariant().Trim())
-                            {
-                                case "vef":
-                                    opts = "{ aSep: '.', aDec: ',', aSign: ' Bs.F', pSign: 's'}";
-                                    break;
-                                case "usd":
-                                    opts = "{ aSep: ',', aDec: '.', aSign: '$ ', pSign: 'p'}";
-                                    break;
-                            }
-                            if (!String.IsNullOrEmpty(DisplayFormat))
-                            {
-                                Page.ClientScript.RegisterStartupScript(Page.GetType(), "format_fld" + ((WebControl)fld).ClientID,
-                                    String.Format("$('#{0}').autoNumeric('init', {1});", ((WebControl)fld).ClientID, opts),
-                                    true
-                                );
-                            }
-                            break;
-                    }
-
-                    switch (Type)
-                    {
-                        case EQubeFormBaseFieldType.Alpha:
-                        case EQubeFormBaseFieldType.Alphanumeric:
-                        case EQubeFormBaseFieldType.Date:
-                        case EQubeFormBaseFieldType.Numeric:
-                        case EQubeFormBaseFieldType.Password:
-                        case EQubeFormBaseFieldType.Currency:
-                            if(!String.IsNullOrEmpty(OnClientValueChanged))
-                            {
-                                Page.ClientScript.RegisterStartupScript(Page.GetType(), "change_fld" + ((WebControl)fld).ClientID,
-                                    "$('#" + ((WebControl)fld).ClientID + "').on('keydown', function() { PageMethods." + OnClientValueChanged + "(); });",
-                                    true
-                                );
-                            }
-                            break;
-                    }
-
-                }
+                Controls.Add(fld);
             }
+
+            ToolTip = string.Empty;
         }
 
         protected override void Render(HtmlTextWriter w)
         {
             HtmlCustomControl span = new HtmlCustomControl("span");
             base.RenderBeginTag(w);
-            if (FieldName != null)
+            if (DisplayName != null)
             {
-                _label.Controls.Add(new Literal() { Text = FieldName + ":" });
-                _label.RenderControl(w);
+                lbl.Controls.Add(new Literal() { Text = DisplayName + ":" });
+                lbl.RenderControl(w);
             }
             span.RenderBeginTag(w);
             base.RenderContents(w);
             span.RenderEndTag(w);
             base.RenderEndTag(w);
-        }
-
-        public void SetValue(object v)
-        {
-            switch (Type)
-            {
-                case EQubeFormBaseFieldType.Alpha:
-                case EQubeFormBaseFieldType.Alphanumeric:
-                case EQubeFormBaseFieldType.Date:
-                case EQubeFormBaseFieldType.Numeric:
-                case EQubeFormBaseFieldType.Password:
-                case EQubeFormBaseFieldType.Currency:
-                    ((QubeTextBox)fld).Text = v.ToString();
-                    break;
-                case EQubeFormBaseFieldType.Checkbox:
-                    ((QubeCheckBox)fld).Checked = (bool)v;
-                    break;
-                case EQubeFormBaseFieldType.DropDownList:
-                    ((QubeDropDownList)fld).SelectedValue = v.ToString();
-                    break;
-            }
         }
     }
 }

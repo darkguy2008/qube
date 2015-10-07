@@ -8,40 +8,40 @@ namespace Qube.Globalization
 {
     public class GlobalizedStrings
     {
-        private Dictionary<String, String> _dict = new Dictionary<String, String>();
-        public Dictionary<String, String>.KeyCollection Keys { get { return _dict.Keys; } }
+        private Dictionary<string, string> _dict = new Dictionary<string, string>();
+        public Dictionary<string, string>.KeyCollection Keys { get { return _dict.Keys; } }
 
         public GlobalizedStrings()
         {
             Init(HttpContext.Current.Server.MapPath("~/App_GlobalResources/Qube." + CultureInfo.CurrentUICulture.TwoLetterISOLanguageName + ".txt"));
         }
 
-        public GlobalizedStrings(String filename)
+        public GlobalizedStrings(string filename)
         {
             Init(filename);
         }
 
-        public void Init(String filename)
+        public void Init(string filename)
         {
             bool add = false;
-            String dictKey = String.Empty;
-            String finalString = String.Empty;
-            foreach (String l in File.ReadAllLines(filename))
+            string dictKey = string.Empty;
+            string finalString = string.Empty;
+            foreach (string l in File.ReadAllLines(filename))
             {
-                String line = l.Trim();
-                if (line.StartsWith("#") && String.IsNullOrEmpty(dictKey))
+                string line = l.Trim();
+                if (line.StartsWith("#") && string.IsNullOrEmpty(dictKey))
                     continue;
 
-                if (line.Contains("=") && String.IsNullOrEmpty(dictKey))
+                if (line.Contains("=") && string.IsNullOrEmpty(dictKey))
                 {
                     dictKey = line.Substring(0, line.IndexOf("="));
                     line = line.Substring(line.IndexOf("=") + 1);
                 }
 
-                if (!line.EndsWith("\\") && !String.IsNullOrEmpty(dictKey))
+                if (!line.EndsWith("\\") && !string.IsNullOrEmpty(dictKey))
                 {
                     add = true;
-                    if (!String.IsNullOrEmpty(finalString))
+                    if (!string.IsNullOrEmpty(finalString))
                     {
                         finalString += line.TrimEnd('\\');
                         finalString += Environment.NewLine;
@@ -50,13 +50,13 @@ namespace Qube.Globalization
                         finalString = line;
                 }
 
-                if (line.EndsWith("\\") && !String.IsNullOrEmpty(dictKey))
+                if (line.EndsWith("\\") && !string.IsNullOrEmpty(dictKey))
                 {
                     finalString += line.TrimEnd('\\');
                     finalString += Environment.NewLine;
                 }
 
-                if (String.IsNullOrEmpty(line.Trim()) && !String.IsNullOrEmpty(dictKey))
+                if (string.IsNullOrEmpty(line.Trim()) && !string.IsNullOrEmpty(dictKey))
                 {
                     add = true;
                 }
@@ -66,13 +66,13 @@ namespace Qube.Globalization
                     dictKey = dictKey.Trim();
                     _dict[dictKey] = finalString.Trim();
                     add = false;
-                    dictKey = String.Empty;
-                    finalString = String.Empty;
+                    dictKey = string.Empty;
+                    finalString = string.Empty;
                 }
             }
         }
 
-        public String this[String key]
+        public string this[string key]
         {
             get
             {

@@ -6,19 +6,19 @@ namespace Qube.IO
 {
     public static class INIFile
     {
-        public static Dictionary<String, Dictionary<String, String>> Read(String iniFile)
+        public static Dictionary<string, Dictionary<string, string>> Read(string iniFile)
         {
-            Dictionary<String, Dictionary<String, String>> rv = new Dictionary<String, Dictionary<String, String>>();
+            Dictionary<string, Dictionary<string, string>> rv = new Dictionary<string, Dictionary<string, string>>();
 
-            String lastKey = String.Empty;
-            foreach (String l in File.ReadAllLines(iniFile))
+            string lastKey = string.Empty;
+            foreach (string l in File.ReadAllLines(iniFile))
             {
                 if (l.StartsWith(";") || l.StartsWith("#"))
                     continue;
                 if (l.StartsWith("["))
                 {
                     lastKey = l.Substring(l.IndexOf('[') + 1, l.LastIndexOf(']') - 1);
-                    rv[lastKey] = new Dictionary<String, String>();
+                    rv[lastKey] = new Dictionary<string, string>();
                 }
                 else
                     if (l.Contains("="))
@@ -28,13 +28,13 @@ namespace Qube.IO
             return rv;
         }
 
-        public static void Save(this Dictionary<String, Dictionary<String, String>> ini, String filename)
+        public static void Save(this Dictionary<string, Dictionary<string, string>> ini, string filename)
         {
             using (StreamWriter sw = new StreamWriter(filename, false))
-                foreach (String key in ini.Keys)
+                foreach (string key in ini.Keys)
                 {
                     sw.WriteLine("[" + key + "]");
-                    foreach (KeyValuePair<String, String> kvp in ini[key])
+                    foreach (KeyValuePair<string, string> kvp in ini[key])
                         sw.WriteLine(kvp.Key + "=" + kvp.Value);
                     sw.WriteLine();
                 }

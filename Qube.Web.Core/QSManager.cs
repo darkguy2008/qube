@@ -8,7 +8,7 @@ namespace Qube.Web.Core
 
     public class QSManager
     {
-        private Dictionary<String, String> _qs = new Dictionary<String, String>();
+        private Dictionary<string, string> _qs = new Dictionary<string, string>();
 
         public QSManager(HttpContext cx)
         {
@@ -27,27 +27,27 @@ namespace Qube.Web.Core
 
         private void Load(NameValueCollection qs)
         {
-            foreach (String key in qs.Keys)
+            foreach (string key in qs.Keys)
                 if (key == null)
                     _qs[qs[key]] = null;
                 else
                     _qs[key] = qs[key];
         }
 
-        public String this[String key]
+        public string this[string key]
         {
             get { return _qs[key].ToString() ?? null; }
         }
 
-        public bool Contains(params String[] keys)
+        public bool Contains(params string[] keys)
         {
-            foreach (String s in keys)
+            foreach (string s in keys)
                 if (!_qs.ContainsKey(s))
                     return false;
             return true;
         }
 
-        public void Remove(String key)
+        public void Remove(string key)
         {
             _qs.Remove(key);
         }

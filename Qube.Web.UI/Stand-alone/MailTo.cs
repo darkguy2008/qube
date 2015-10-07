@@ -6,7 +6,7 @@ namespace Qube.Web.UI
 {
     public class MailTo : LinkButton
     {
-        public String Address { get; set; }
+        public string Address { get; set; }
 
         protected override void OnInit(EventArgs e)
         {

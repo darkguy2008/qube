@@ -6,14 +6,14 @@ namespace Qube.Console
 {
     public class CommandLine
     {
-        private Dictionary<String, String> _cmd = new Dictionary<String, String>();
+        private Dictionary<string, string> _cmd = new Dictionary<string, string>();
 
         public CommandLine(string[] args)
         {
-            String lastKey = String.Empty;
+            string lastKey = string.Empty;
             for (int i = 0; i < args.Length; i++)
             {
-                String arg = args[i];
+                string arg = args[i];
                 if (arg.StartsWith("\"")) { arg = arg.Substring(1); }
                 if (arg.EndsWith("\"")) { arg = arg.Substring(0, arg.Length - 1); }
                 if (arg.StartsWith("-"))
@@ -28,13 +28,13 @@ namespace Qube.Console
             }
         }
 
-        public bool ContainsArg(String key)
+        public bool ContainsArg(string key)
         {
             return _cmd.ContainsKey(key);
         }
         public int Length { get { return _cmd.Count; } }
 
-        public String this[String key]
+        public string this[string key]
         {
             get
             {
@@ -46,7 +46,7 @@ namespace Qube.Console
             }
         }
 
-        public String this[int index]
+        public string this[int index]
         {
             get
             {

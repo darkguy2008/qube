@@ -19,7 +19,7 @@ namespace Qube.Web.Core
             Favicon = 3
         }
 
-        public String Path { get; set; }
+        public string Path { get; set; }
         public bool Cache { get; set; }
 
         public WebResource(EResourceType t)
@@ -49,11 +49,11 @@ namespace Qube.Web.Core
 
         protected override void Render(HtmlTextWriter w)
         {
-            String tick = DateTime.Now.Ticks.ToString();
+            string tick = DateTime.Now.Ticks.ToString();
             if (Path == null)
-                Path = String.Empty;
+                Path = string.Empty;
 
-            String url = Page.ResolveClientUrl(HttpUtility.HtmlDecode(Path));
+            string url = Page.ResolveClientUrl(HttpUtility.HtmlDecode(Path));
             if(!Cache)
                 if(url.Contains("?") || url.Contains("#"))
                     url = url + "&_t=" + tick;

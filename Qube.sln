@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
+# Visual Studio Express 14 for Web
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qube.Web.Core", "Qube.Web.Core\Qube.Web.Core.csproj", "{43B292DD-F957-4985-B0A8-594093AE15A1}"
@@ -20,6 +20,29 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qube.WebServices", "Qube.WebServices\Qube.WebServices.csproj", "{CC8A4980-1C4F-46A8-B6A0-7F6D3B56A802}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qube.IO", "Qube.IO\Qube.IO.csproj", "{62F9E832-C0AB-48C7-A977-8543C92DF6B0}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebTest", "Test\WebTest\", "{63291D65-1E2D-43DB-A073-5CCA0EA537F6}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		ProjectReferences = "{b7e23e44-3155-4958-98e3-a99250a4422c}|Qube.Web.UI.dll;{7BB9D0A3-33E3-4E7E-9EE3-0208C94425B2}|Qube.Globalization.dll;{43B292DD-F957-4985-B0A8-594093AE15A1}|Qube.Web.Core.dll;{E5FCAF31-082A-411E-8FEB-6C524AE60C88}|Qube.Extensions.dll;"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_62644"
+		Debug.AspNetCompiler.PhysicalPath = "Test\WebTest\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_62644\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_62644"
+		Release.AspNetCompiler.PhysicalPath = "Test\WebTest\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_62644\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "62644"
+		SlnRelativePath = "Test\WebTest\"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +86,10 @@ Global
 		{62F9E832-C0AB-48C7-A977-8543C92DF6B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62F9E832-C0AB-48C7-A977-8543C92DF6B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62F9E832-C0AB-48C7-A977-8543C92DF6B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63291D65-1E2D-43DB-A073-5CCA0EA537F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63291D65-1E2D-43DB-A073-5CCA0EA537F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63291D65-1E2D-43DB-A073-5CCA0EA537F6}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{63291D65-1E2D-43DB-A073-5CCA0EA537F6}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

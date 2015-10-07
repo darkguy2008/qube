@@ -5,6 +5,6 @@ namespace Qube.Web.UI
 {
     public class QubeCustomValidator : CustomValidator
     {
-        public String ControlToValidateUniqueID { get; set; }
+        public string ControlToValidateUniqueID { get; set; }
     }
 }

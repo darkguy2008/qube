@@ -4,6 +4,7 @@ using System;
 using System.Web.UI.WebControls;
 using System.Linq;
 using System.Web.UI;
+using Qube.Extensions;
 
 namespace Qube.Web.UI
 {
@@ -13,7 +14,7 @@ namespace Qube.Web.UI
         public delegate void QubeStandardFormAfterSubmitEventHandler(QubeStandardForm sender, QubeFormBaseSubmitArguments args);
 
         public bool RenderFieldsOuterDiv { get; set; }
-        public String SubmitButtonText { get; set; }
+        public string SubmitButtonText { get; set; }
         public bool SubmitEnabled { get; set; }
         public event QubeStandardFormBeforeSubmitEventHandler BeforeSubmit;
         public event QubeStandardFormAfterSubmitEventHandler AfterSubmit;
@@ -26,7 +27,7 @@ namespace Qube.Web.UI
 
         private void QubeStandardForm_Load(object Submiter, EventArgs e)
         {
-            Extensions.ControlFinder<QubeStandardPanel> cf = new Extensions.ControlFinder<QubeStandardPanel>();
+            QubeExtensions.ControlFinder<QubeStandardPanel> cf = new QubeExtensions.ControlFinder<QubeStandardPanel>();
             cf.FindChildControlsRecursive(this);
             cf.FoundControls.First().IsCurrent = true;
             cf.FoundControls.First().RenderFieldsOuterDiv = RenderFieldsOuterDiv;
@@ -69,10 +70,10 @@ namespace Qube.Web.UI
             base.OnInit(e);
 
             Lang = new GlobalizedStrings();
-            if(String.IsNullOrEmpty(((QubeStandardForm)FormParent).SubmitButtonText))
+            if(string.IsNullOrEmpty(((QubeStandardForm)FormParent).SubmitButtonText))
                 ((QubeStandardForm)FormParent).SubmitButtonText = Lang["CommonSubmit"];
 
-            btnSubmit.ID = String.Format("{0}_{1}_{2}", Parent.ID, ID, "btnSubmit");       
+            btnSubmit.ID = string.Format("{0}_{1}_{2}", Parent.ID, ID, "btnSubmit");       
             btnSubmit.CausesValidation = true;            
             btnSubmit.Click += BtnSubmit_Click;            
         }
@@ -92,15 +93,15 @@ namespace Qube.Web.UI
                         p.RenderBeginTag(w);    
                     HtmlCustomControl lbField = new HtmlCustomControl("label");
                     lbField.Attributes["for"] = c.ClientID;
-                    lbField.Controls.Add(new Literal() { Text = ((IQubeFormField)c).FieldName + ":" });
+                    lbField.Controls.Add(new Literal() { Text = ((IQubeFormField)c).DisplayName + ":" });
                     HtmlCustomControl span = new HtmlCustomControl("span");
-                    if (!String.IsNullOrEmpty(fld.FieldName))
+                    if (!string.IsNullOrEmpty(fld.DisplayName))
                     {
                         lbField.RenderControl(w);
                         span.RenderBeginTag(w);
                     }
                     c.RenderControl(w);
-                    if (!String.IsNullOrEmpty(fld.FieldName))
+                    if (!string.IsNullOrEmpty(fld.DisplayName))
                         span.RenderEndTag(w);
                     if (RenderFieldsOuterDiv)
                         p.RenderEndTag(w);

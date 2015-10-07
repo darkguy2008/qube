@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.SessionState;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Qube.Extensions;
 
 namespace Qube.Web.UI
 {
@@ -21,9 +22,9 @@ namespace Qube.Web.UI
         }
 
         CustomValidator cv;
-        public String ValidationGroup { get; set; }
-        public String ValidationTextBoxID { get; set; }
-        public String ErrorMessage { get; set; }
+        public string ValidationGroup { get; set; }
+        public string ValidationTextBoxID { get; set; }
+        public string ErrorMessage { get; set; }
         public ValidatorDisplay Display { get; set; }
         protected override void OnInit(EventArgs e)
         {
@@ -39,7 +40,7 @@ namespace Qube.Web.UI
 
         void cv_ServerValidate(object source, ServerValidateEventArgs args)
         {
-            TextBox txCaptcha = (TextBox)Extensions.FindControlRecursive(Page, ValidationTextBoxID);
+            TextBox txCaptcha = (TextBox)Page.FindControlRecursive(ValidationTextBoxID);
 
             if (txCaptcha.Text.Trim() == HttpContext.Current.Session["Captcha_" + ID].ToString())
             {
@@ -50,7 +51,7 @@ namespace Qube.Web.UI
             {
                 Regenerate();
                 args.IsValid = false;
-                txCaptcha.Text = String.Empty;
+                txCaptcha.Text = string.Empty;
             }
         }
 
@@ -75,7 +76,7 @@ namespace Qube.Web.UI
             Attributes["src"] = GenerateImage();
         }
 
-        public String Text { get; set; }
+        public string Text { get; set; }
         public Bitmap Image { get; set; }
         public new int Width { get; set; }
         public new int Height { get; set; }
@@ -87,7 +88,7 @@ namespace Qube.Web.UI
         {
             string s = "";
             for (int i = 0; i < 6; i++)
-                s = String.Concat(s, this.random.Next(10).ToString());
+                s = string.Concat(s, this.random.Next(10).ToString());
             return s;
         }
 
@@ -105,7 +106,7 @@ namespace Qube.Web.UI
             }
         }
 
-        private String GenerateImage()
+        private string GenerateImage()
         {
             Image = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
             Graphics g = Graphics.FromImage(Image);

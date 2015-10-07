@@ -4,26 +4,31 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Qube.Web.Core;
+using Qube.Extensions;
 
 namespace Qube.Web.UI
 {
     public class QubeDropDownList : DropDownList, IQubeFormField
     {
         // Interface members
-        public String FieldName { get; set; }
-        public String DataField { get; set; }
-        public String DataFormatString { get; set; }
+        public bool RenderLabel { get; set; }
+        public string DisplayName { get; set; }
+        public string DisplayFormat { get; set; }
+        public string DataField { get; set; }
+        public string DataFormatString { get; set; }
+        public string OnClientValueChanged { get; set; }
 
         public bool Required { get; set; }
-        public String ValidatorPlaceHolder { get; set; }
+        public string ValidatorPlaceHolder { get; set; }
 
-        public String EmptyErrorMessage { get; set; }
+        public string EmptyErrorMessage { get; set; }
 
         private CustomValidator cv;
         private GlobalizedStrings Lang;
 
         public QubeDropDownList()
         {
+            RenderLabel = false;
             ValidatorPlaceHolder = "QubeValidatorPlaceHolder";
         }
 
@@ -35,7 +40,7 @@ namespace Qube.Web.UI
 
         protected override void OnLoad(EventArgs e)
         {
-            EmptyErrorMessage = String.IsNullOrEmpty(EmptyErrorMessage) ? Lang["DropDownListEmptyMessage"] : EmptyErrorMessage;
+            EmptyErrorMessage = string.IsNullOrEmpty(EmptyErrorMessage) ? Lang["DropDownListEmptyMessage"] : EmptyErrorMessage;
 
             cv = new QubeCustomValidator()
             {
@@ -45,19 +50,19 @@ namespace Qube.Web.UI
                 Display = ValidatorDisplay.None,
                 ValidateEmptyText = true
             };
-            if (!String.IsNullOrEmpty(EmptyErrorMessage))
-                cv.ErrorMessage = String.Format(EmptyErrorMessage, FieldName);
+            if (!string.IsNullOrEmpty(EmptyErrorMessage))
+                cv.ErrorMessage = string.Format(EmptyErrorMessage, DisplayName);
 
             cv.ServerValidate += new ServerValidateEventHandler(cv_ServerValidate);
 
-            if (!String.IsNullOrEmpty(ValidatorPlaceHolder) && Page.FindControl(ValidatorPlaceHolder) != null)
+            if (!string.IsNullOrEmpty(ValidatorPlaceHolder) && Page.FindControl(ValidatorPlaceHolder) != null)
                 Page.FindControl(ValidatorPlaceHolder).Controls.Add(cv);
-            else if (!String.IsNullOrEmpty(ValidatorPlaceHolder) && Page.Master != null && Page.Master.FindControl(ValidatorPlaceHolder) != null)
+            else if (!string.IsNullOrEmpty(ValidatorPlaceHolder) && Page.Master != null && Page.Master.FindControl(ValidatorPlaceHolder) != null)
                 Page.Master.FindControl(ValidatorPlaceHolder).Controls.Add(cv);
             else
             {
                 MasterPage m = Page.Master;
-                Extensions.ControlFinder<PlaceHolder> cf = new Extensions.ControlFinder<PlaceHolder>();
+                QubeExtensions.ControlFinder<PlaceHolder> cf = new QubeExtensions.ControlFinder<PlaceHolder>();
                 while (m.Master != null)
                     m = m.Master;
                 cf.FindChildControlsRecursive(m);
@@ -72,10 +77,10 @@ namespace Qube.Web.UI
 
         private void cv_ServerValidate(object source, ServerValidateEventArgs args)
         {
-            if (Required && (SelectedItem == null || String.IsNullOrEmpty(SelectedItem.Value)))
+            if (Required && (SelectedItem == null || string.IsNullOrEmpty(SelectedItem.Value)))
             {
                 args.IsValid = false;
-                cv.ErrorMessage = String.Format(EmptyErrorMessage, FieldName);
+                cv.ErrorMessage = string.Format(EmptyErrorMessage, DisplayName);
                 return;
             }
         }
@@ -92,7 +97,20 @@ namespace Qube.Web.UI
 
         public string GetFormattedValue()
         {
-            return String.Format(SelectedItem.Value, DataFormatString);
+            return string.Format(SelectedItem.Value, DataFormatString);
+        }
+
+        protected override void Render(HtmlTextWriter w)
+        {
+            if (RenderLabel && !string.IsNullOrEmpty(DisplayName))
+            {
+                HtmlCustomControl lbl = new HtmlCustomControl("label");
+                lbl.Controls.Add(new Literal() { Text = DisplayName + ":" });
+                lbl.RenderControl(w);
+                base.Render(w);
+            }
+            else
+                base.Render(w);
         }
     }
 }
