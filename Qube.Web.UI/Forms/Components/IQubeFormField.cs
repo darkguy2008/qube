@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Qube.Web.UI
+﻿namespace Qube.Web.UI
 {
     public interface IQubeFormField
     {

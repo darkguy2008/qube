@@ -7,14 +7,35 @@ using Qube.Extensions;
 using System.Reflection;
 using System.IO;
 using System.Text;
+using System.Web.Configuration;
 
 namespace Qube.WebServices
 {
+    [AttributeUsage(AttributeTargets.All)]
+    public class POSTMethod : Attribute
+    {
+        public POSTMethod() { }
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
+    public class GETMethod : Attribute
+    {
+        public GETMethod() { }
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
+    public class ReturnsDate : Attribute
+    {
+        public ReturnsDate() { }
+    }
+
     public class JSONWebService : IHttpHandler
     {
         protected QSManager qs;
         public StreamReader Post;
         public HttpRequest Request;
+        private HttpContext Context;
+        private bool isCustomResponse = false;
 
         protected virtual void WriteJSON(HttpContext cx, object obj)
         {
@@ -24,6 +45,7 @@ namespace Qube.WebServices
 
         public void ProcessRequest(HttpContext cx)
         {
+            Context = cx;
             if (cx.Request.HttpMethod == "GET")
                 qs = new QSManager(cx.Request.QueryString);
             else if (cx.Request.HttpMethod == "POST")
@@ -32,7 +54,7 @@ namespace Qube.WebServices
             cx.Response.ContentEncoding = Encoding.UTF8;
 
             if (!qs.Contains("op"))
-            {                
+            {
                 WriteJSON(cx, new { Result = -1 });
                 cx.Response.End();
             }
@@ -44,7 +66,9 @@ namespace Qube.WebServices
                 using (Post = new StreamReader(cx.Request.InputStream))
                     try
                     {
-                        WriteJSON(cx, Run(op, qs));
+                        object rv = Run(op, qs);
+                        if (!isCustomResponse)
+                            WriteJSON(cx, rv);
                     }
                     catch (Exception e)
                     {
@@ -72,6 +96,59 @@ namespace Qube.WebServices
             }
 
             return fn.Invoke(this, args.ToArray());
+        }
+
+        public void CSharpClient()
+        {
+            CompilationSection compilationSection = (CompilationSection)WebConfigurationManager.GetSection(@"system.web/compilation");
+            if (!compilationSection.Debug)
+                throw new Exception("Debug parameter in compilation web.config section is not set to True");
+
+            isCustomResponse = true;
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("public class WebService : JSONWebClient");
+            sb.AppendLine("{");
+            sb.AppendLine("    public WebService(string svcUrl) { ServiceURL = svcUrl; }");
+            sb.AppendLine("    ");
+
+            List<MethodInfo> lMethods = this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToList();
+            foreach (MethodInfo mi in lMethods)
+            {
+                String fixDates = String.Empty;
+                String method = "MethodGET";
+                foreach (var attr in mi.GetCustomAttributes(false))
+                {
+                    if (attr.GetType() == typeof(POSTMethod))
+                        method = "MethodPOST";
+                    if (attr.GetType() == typeof(ReturnsDate))
+                        fixDates = "FixDates(rv);";
+                }
+
+                List<string> lArgs = new List<string>();
+                foreach (ParameterInfo pi in mi.GetParameters())
+                    lArgs.Add(pi.ToString());
+
+                sb.AppendLine(String.Format("    public T {0}<T>({1})", mi.Name, String.Join(", ", lArgs)));
+                sb.AppendLine("    {");
+                sb.AppendLine(String.Format("        T rv = {0}<T>(\"{1}\", new Dictionary<string, object>()", method, mi.Name) + " {");
+
+                lArgs = new List<string>();
+                foreach (ParameterInfo pi in mi.GetParameters())
+                    lArgs.Add("            { " + String.Format("\"{0}\", {0}", pi.Name) + " }");
+                sb.AppendLine(String.Join("," + Environment.NewLine, lArgs));
+                sb.AppendLine("        });");
+                if (!String.IsNullOrEmpty(fixDates))
+                    sb.AppendLine("        " + fixDates);
+                sb.AppendLine("        return rv;");
+                sb.AppendLine("    }");
+                sb.AppendLine("    ");
+            }
+
+            sb.AppendLine("}");
+            Context.Response.Clear();
+            Context.Response.ContentType = "text/plain";
+            Context.Response.Write(sb.ToString());
         }
 
         public bool IsReusable { get { return false; } }
