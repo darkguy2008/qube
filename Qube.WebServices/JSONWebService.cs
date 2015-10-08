@@ -115,8 +115,8 @@ namespace Qube.WebServices
             List<MethodInfo> lMethods = this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToList();
             foreach (MethodInfo mi in lMethods)
             {
-                String fixDates = String.Empty;
-                String method = "MethodGET";
+                string fixDates = string.Empty;
+                string method = "MethodGET";
                 foreach (var attr in mi.GetCustomAttributes(false))
                 {
                     if (attr.GetType() == typeof(POSTMethod))
@@ -129,16 +129,16 @@ namespace Qube.WebServices
                 foreach (ParameterInfo pi in mi.GetParameters())
                     lArgs.Add(pi.ToString());
 
-                sb.AppendLine(String.Format("    public T {0}<T>({1})", mi.Name, String.Join(", ", lArgs)));
+                sb.AppendLine(string.Format("    public T {0}<T>({1})", mi.Name, string.Join(", ", lArgs)));
                 sb.AppendLine("    {");
-                sb.AppendLine(String.Format("        T rv = {0}<T>(\"{1}\", new Dictionary<string, object>()", method, mi.Name) + " {");
+                sb.AppendLine(string.Format("        T rv = {0}<T>(\"{1}\", new Dictionary<string, object>()", method, mi.Name) + " {");
 
                 lArgs = new List<string>();
                 foreach (ParameterInfo pi in mi.GetParameters())
-                    lArgs.Add("            { " + String.Format("\"{0}\", {0}", pi.Name) + " }");
-                sb.AppendLine(String.Join("," + Environment.NewLine, lArgs));
+                    lArgs.Add("            { " + string.Format("\"{0}\", {0}", pi.Name) + " }");
+                sb.AppendLine(string.Join("," + Environment.NewLine, lArgs));
                 sb.AppendLine("        });");
-                if (!String.IsNullOrEmpty(fixDates))
+                if (!string.IsNullOrEmpty(fixDates))
                     sb.AppendLine("        " + fixDates);
                 sb.AppendLine("        return rv;");
                 sb.AppendLine("    }");
