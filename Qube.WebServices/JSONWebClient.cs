@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
@@ -36,6 +35,9 @@ namespace Qube.WebServices
 
         public void FixDates(object obj)
         {
+            if (obj == null)
+                return;
+
             foreach (Type i in obj.GetType().GetInterfaces())
             {
                 if (i.Name.ToLowerInvariant().Trim() == "ilist")

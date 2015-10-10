@@ -87,7 +87,7 @@ namespace Qube.Web.UI
                 );
             }
 
-            if(ValidationType == EValidationType.Currency)
+            if(ValidationType == EValidationType.Currency && !String.IsNullOrEmpty(DisplayFormat))
             {
                 string opts = "";
                 switch (DisplayFormat.ToLowerInvariant().Trim())
@@ -107,6 +107,9 @@ namespace Qube.Web.UI
                     );
                 }
             }
+
+            if (ValidationType == EValidationType.Date)
+                CssClass = "date";
         }
 
         void cv_ServerValidate(object source, ServerValidateEventArgs args)

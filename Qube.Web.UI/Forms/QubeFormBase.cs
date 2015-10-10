@@ -257,5 +257,19 @@ namespace Qube.Web.UI
             span.RenderEndTag(w);
             base.RenderEndTag(w);
         }
+
+        public T GetValue<T>()
+        {
+            if (fld == null)
+                return default(T);
+            else
+                return ((IQubeFormField)fld).GetValue<T>();
+        }
+
+        public void SetValue(object v)
+        {
+            if (fld != null)
+                ((IQubeFormField)fld).SetValue(v);
+        }
     }
 }
