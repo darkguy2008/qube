@@ -163,9 +163,12 @@ namespace Qube.Web.UI
     public class QubeFormBaseField : HtmlCustomControl
     {
 
+        public int Rows { get; set; }
+        public int Cols { get; set; }
         public int MaxLength { get; set; }
         public bool Required { get; set; }
         public bool ReadOnly { get; set; }
+        public bool MultiLine { get; set; }
         public string DataField { get; set; }
         public string DataFormat { get; set; }
         public string DisplayName { get; set; }
@@ -198,12 +201,15 @@ namespace Qube.Web.UI
                 case EQubeFormBaseFieldType.Numeric:
                 case EQubeFormBaseFieldType.Password:
                 case EQubeFormBaseFieldType.Currency:
+                case EQubeFormBaseFieldType.Email:
                     fld = new QubeTextBox();
                     ((QubeTextBox)fld).ValidationType = (EValidationType)Type;
                     if (Type == EQubeFormBaseFieldType.Date)
                         fld.CssClass = "date";
                     if (Type == EQubeFormBaseFieldType.Password)
                         ((QubeTextBox)fld).TextMode = TextBoxMode.Password;
+                    if (MultiLine)
+                        ((QubeTextBox)fld).TextMode = TextBoxMode.MultiLine;
                     break;
                 case EQubeFormBaseFieldType.Checkbox:
                     fld = new QubeCheckBox();
@@ -230,7 +236,9 @@ namespace Qube.Web.UI
                 "PlaceHolder",
                 "OnClientValueChanged",
                 "Type",
-                "ToolTip"
+                "ToolTip",
+                "Rows",
+                "Cols"
                 });
 
                 fld.Attributes.Add("placeholder", PlaceHolder);
