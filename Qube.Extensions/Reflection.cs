@@ -5,8 +5,15 @@ using System.Linq;
 
 namespace Qube.Extensions
 {
-    public static class Object
+    public static class ReflectionExtensions
     {
+        public static void Invoke<T>(string methodName, object[] args) where T : new()
+        {
+            T instance = new T();
+            MethodInfo method = typeof(T).GetMethod(methodName);
+            method.Invoke(instance, args);
+        }
+
         public static void CopyObject(this object src, object dst, string[] propsToCopy = null)
         {
             PropertyInfo[] piSrc = src.GetType().GetProperties();
@@ -14,7 +21,7 @@ namespace Qube.Extensions
             foreach (PropertyInfo pd in piDst)
                 foreach (PropertyInfo ps in piSrc)
                     if (ps.Name == pd.Name)
-                        if(propsToCopy == null || (propsToCopy != null && propsToCopy.Contains(pd.Name)))
+                        if (propsToCopy == null || (propsToCopy != null && propsToCopy.Contains(pd.Name)))
                             if (pd.CanWrite)
                                 pd.SetValue(dst, ps.GetValue(src, null), null);
         }

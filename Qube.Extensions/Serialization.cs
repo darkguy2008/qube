@@ -51,5 +51,12 @@ namespace Qube.Extensions
             ms.Close();
             return obj;
         }
+
+        // http://stackoverflow.com/questions/3142495/deserialize-json-into-c-sharp-dynamic-object
+        public static dynamic ToDynamic(this JavaScriptSerializer serializer, string value)
+        {
+            var dictionary = serializer.Deserialize<IDictionary<string, object>>(value);
+            return dictionary.ToDynamic();
+        }
     }
 }
