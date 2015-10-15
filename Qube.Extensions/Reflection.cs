@@ -40,7 +40,7 @@ namespace Qube.Extensions
                 }
                 catch
                 {
-                    if (--retryCount == 0) throw;
+                    if (--retryCount <= 0) throw;
                     else Thread.Sleep(sleepPeriod);
                 }
             }

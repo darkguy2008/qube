@@ -4,7 +4,7 @@ using System.DirectoryServices;
 using System.Web;
 using System.Web.Configuration;
 
-namespace Italcambio.Web.Security
+namespace Qube.Web.Security
 {
     public class ADMembershipProvider : MembershipProvider
     {

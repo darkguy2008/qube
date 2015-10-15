@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Text;
 using System.Web;
 
 namespace Qube.Web.Core
@@ -36,6 +38,7 @@ namespace Qube.Web.Core
         public string this[string key]
         {
             get { return _qs[key].ToString() ?? null; }
+            set { _qs[key] = value; }
         }
 
         public bool Contains(params string[] keys)
@@ -49,6 +52,18 @@ namespace Qube.Web.Core
         public void Remove(string key)
         {
             _qs.Remove(key);
+        }
+
+        public string Build(Uri uri)
+        {
+            if (_qs.Count <= 0)
+                return uri.ToString();
+
+            List<string> qs = new List<string>();
+            foreach (var kv in _qs)
+                qs.Add(kv.Key + "=" + HttpUtility.UrlEncode(kv.Value));
+
+            return uri.GetLeftPart(UriPartial.Path) + "?" + String.Join("&", qs);
         }
     }
 

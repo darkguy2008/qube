@@ -47,6 +47,7 @@
     <Compile Include="Linq.cs" />
     <Compile Include="Reflection.cs" />
     <Compile Include="Serialization.cs" />
+    <Compile Include="String.cs" />
     <Compile Include="XML.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

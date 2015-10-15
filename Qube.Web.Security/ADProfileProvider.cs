@@ -2,7 +2,7 @@
 using System.Web.Profile;
 using System.Collections.Specialized;
 
-namespace Italcambio.Web.Security
+namespace Qube.Web.Security
 {
     public class ADProfileProvider : ProfileProvider
     {

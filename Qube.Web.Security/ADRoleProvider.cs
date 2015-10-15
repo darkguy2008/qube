@@ -4,7 +4,7 @@ using System.Web.Security;
 using System.DirectoryServices;
 using System.Web.Configuration;
 
-namespace Italcambio.Web.Security
+namespace Qube.Web.Security
 {
     public class ADRoleProvider : RoleProvider
     {
