@@ -238,7 +238,9 @@ namespace Qube.Web.UI
                 "Type",
                 "ToolTip",
                 "Rows",
-                "Cols"
+                "Cols",
+                "Width",
+                "Height"
                 });
 
                 fld.Attributes.Add("placeholder", PlaceHolder);
