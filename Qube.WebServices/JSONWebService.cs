@@ -39,8 +39,13 @@ namespace Qube.WebServices
 
         protected virtual void WriteJSON(HttpContext cx, object obj)
         {
-            cx.Response.ContentType = "text/plain";
-            cx.Response.Write(obj.ToJSON());
+            cx.Response.ContentType = "text/json";
+            cx.Response.Write(ProcessOutput(obj.ToJSON()));
+        }
+
+        protected virtual string ProcessOutput(string json)
+        {
+            return json;
         }
 
         public void ProcessRequest(HttpContext cx)
