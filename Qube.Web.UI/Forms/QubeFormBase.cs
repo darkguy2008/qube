@@ -41,8 +41,18 @@ namespace Qube.Web.UI
         public event QubeFormBaseOperationEventHandler FirstLoad;
         public event QubeFormBaseSubmitEventHandler Submit;
 
+        public ValidationSummary Summary;
+        public bool IncludeValidationSummary { get; set; }
+
+        // TODO: Add form Title parameter to put an H1 before the ValidationSummary so
+        // it looks right
         public QubeFormBase() : base("div")
         {
+            Summary = new ValidationSummary()
+            {
+                CssClass = "vSummary"
+            };
+            IncludeValidationSummary = false;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -144,6 +154,8 @@ namespace Qube.Web.UI
         private void QubeFormBasePanel_Init(object sender, EventArgs e)
         {
             FormParent = Parent as QubeFormBase;
+            if (FormParent.IncludeValidationSummary)
+                Controls.Add(FormParent.Summary);
         }
 
         protected override void OnLoad(EventArgs e)

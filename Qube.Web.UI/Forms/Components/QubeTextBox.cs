@@ -162,7 +162,7 @@ namespace Qube.Web.UI
                             args.IsValid = false;
                         break;                        
                     case EValidationType.Password:
-                        if (!Regex.IsMatch(args.Value, @"^[a-zA-Z0-9\#\!\@\$\&\*\+\-_]{8,15}$"))
+                        if (!Regex.IsMatch(args.Value, @"^[a-zA-Z0-9\#\!\@\$\&\*\+\-_]*$"))
                             args.IsValid = false;
                         break;
                 }
