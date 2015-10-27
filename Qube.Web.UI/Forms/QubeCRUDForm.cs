@@ -140,7 +140,9 @@ namespace Qube.Web.UI
             foreach (PropertyInfo p in pi)
                 if (fields.ContainsKey(p.Name))
                 {
-                    object v = Convert.ChangeType(fields[p.Name].GetValue<object>(), p.PropertyType);
+                    Type t = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
+                    // TODO: If nullable then apply null value else leave value as-is?
+                    object v = (fields[p.Name].GetValue<object>() == null || String.IsNullOrEmpty(fields[p.Name].GetValue<object>().ToString())) ? null : Convert.ChangeType(fields[p.Name].GetValue<object>(), t);
                     if (p.CanWrite)
                         p.SetValue(dst, v, null);
                 }

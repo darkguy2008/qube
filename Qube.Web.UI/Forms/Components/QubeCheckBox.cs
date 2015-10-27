@@ -1,4 +1,6 @@
 ﻿using Qube.Web.Core;
+using System.IO;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace Qube.Web.UI
@@ -16,10 +18,12 @@ namespace Qube.Web.UI
         public QubeCheckBox()
         {
             RenderLabel = false;
+            DataFormatString = "{0}";
         }
 
         protected override void Render(System.Web.UI.HtmlTextWriter w)
         {
+            w = new HtmlTextWriterNoSpan(w);
             string text = Text;
             Text = string.Empty;
 
@@ -59,5 +63,16 @@ namespace Qube.Web.UI
             return string.Format(Checked.ToString(), DataFormatString);
         }
 
+        /// http://stackoverflow.com/a/14532962
+        private class HtmlTextWriterNoSpan : HtmlTextWriter
+        {
+            public HtmlTextWriterNoSpan(TextWriter textWriter) : base(textWriter) { }
+            protected override bool OnTagRender(string name, HtmlTextWriterTag key)
+            {
+                if (key == HtmlTextWriterTag.Span)
+                    return false;
+                return base.OnTagRender(name, key);
+            }
+        }
     }
 }

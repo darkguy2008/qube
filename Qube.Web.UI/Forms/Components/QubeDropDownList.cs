@@ -30,6 +30,7 @@ namespace Qube.Web.UI
         {
             RenderLabel = false;
             ValidatorPlaceHolder = "QubeValidatorPlaceHolder";
+            DataFormatString = "{0}";
         }
 
         protected override void OnInit(EventArgs e)

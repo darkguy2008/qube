@@ -49,6 +49,7 @@ namespace Qube.Web.UI
         public QubeTextBox()
         {
             RenderLabel = false;
+            DataFormatString = "{0}";
         }
 
         protected override void OnInit(EventArgs e)
@@ -174,7 +175,25 @@ namespace Qube.Web.UI
 
         public T GetValue<T>()
         {
-            return (T)(object)Text;
+            String rv = Text;
+
+            if (!String.IsNullOrEmpty(rv))
+            {
+                if (ValidationType == EValidationType.Currency && !String.IsNullOrEmpty(DisplayFormat))
+                {
+                    switch (DisplayFormat.ToLowerInvariant().Trim())
+                    {
+                        case "vef":
+                            rv = rv.ToLowerInvariant().Replace(" bs.f", "").Replace(".", "").Replace(",", ".").Trim();
+                            return (T)(object)Single.Parse(rv, CultureInfo.InvariantCulture);
+                        case "usd":
+                            rv = rv.ToLowerInvariant().Replace("$ ", "").Replace(",", "").Trim();
+                            return (T)(object)Single.Parse(rv, CultureInfo.InvariantCulture);
+                    }
+                }
+            }
+
+            return (T)(object)rv;
         }
 
         public void SetValue(object v)
