@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
@@ -17,7 +17,14 @@ namespace Qube.Web.UI
 
         private void MailTo_Click(object sender, EventArgs e)
         {
-            ((HtmlControl)Page.Master.FindControl("body")).Attributes.Add("onload", "setTimeout( function(){ window.location.assign('mailto:" + Address + "'); }, 500);");
+            // TODO: Refactor algorithm into function?
+            Control c = Page.Master;
+            MasterPage m = Page.Master;
+            while (m.Master != null)
+                m = m.Master;
+            if (c == null)
+                c = Page;
+            ((HtmlControl)Extensions.FindControlRecursive(c, "body")).Attributes.Add("onload", "setTimeout( function(){ window.location.assign('mailto:" + Address + "'); }, 500);");
         }
     }
 }
