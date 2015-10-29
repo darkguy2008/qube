@@ -1,6 +1,8 @@
 using System;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using System.Web.UI;
+using Qube.Extensions;
 
 namespace Qube.Web.UI
 {
@@ -24,7 +26,7 @@ namespace Qube.Web.UI
                 m = m.Master;
             if (c == null)
                 c = Page;
-            ((HtmlControl)Extensions.FindControlRecursive(c, "body")).Attributes.Add("onload", "setTimeout( function(){ window.location.assign('mailto:" + Address + "'); }, 500);");
+            ((HtmlControl)QubeExtensions.FindControlRecursive(c, "body")).Attributes.Add("onload", "setTimeout( function(){ window.location.assign('mailto:" + Address + "'); }, 500);");
         }
     }
 }
