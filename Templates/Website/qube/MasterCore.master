@@ -1,0 +1,38 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterCore.master.cs" Inherits="qube_MasterCore" %><!DOCTYPE html>
+<html>
+    <head runat="server">
+        <meta charset="utf-8" />
+        <title><%= System.Web.Configuration.WebConfigurationManager.AppSettings["AppName"] + ( (String.IsNullOrEmpty(Page.Title) ? "" : "&nbsp;::&nbsp;" + Page.Title) ) %></title>
+        <asp:PlaceHolder runat="server" id="mcRes">
+            <q:FaviconRes runat="server" Path="~/favicon.ico" Cache="false" />
+            <q:CSSRes runat="server" Path="~/qube/res/css/reset.css" />
+            <q:CSSRes runat="server" Path="~/qube/res/css/master.css" />
+            <q:CSSRes runat="server" Path="~/qube/res/css/forms.css" />
+            <q:CSSRes runat="server" Path="~/qube/res/css/font-awesome.min.css" />
+            <q:CSSRes runat="server" Path="~/qube/res/css/jquery-ui.min.css" />
+            <q:CSSRes runat="server" Path="~/qube/res/css/jquery-ui.structure.min.css" />
+            <q:JSRes runat="server" Path="~/qube/res/js/jquery-1.11.3.min.js" />
+            <q:JSRes runat="server" Path="~/qube/res/js/jquery-ui.min.js" />
+            <q:JSRes runat="server" Path="~/qube/res/js/jquery.datepicker-es.js" />
+            <q:JSRes runat="server" Path="~/qube/res/js/autoNumeric-min.js" />
+        </asp:PlaceHolder>
+        <asp:ContentPlaceHolder id="mcHead" runat="server" />
+    </head>
+    <body>
+        <form id="form1" runat="server">        
+            <asp:PlaceHolder runat="server" ID="QubeValidatorPlaceHolder" />
+            <asp:ContentPlaceHolder id="mcContent" runat="server" />
+        </form>
+        <script type="text/javascript">
+            $(function () {
+                $.datepicker.setDefaults($.datepicker.regional["<%= System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName %>"]);
+                $(".date").datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    dateFormat: '<%= System.Globalization.CultureInfo.CurrentUICulture.DateTimeFormat.ShortDatePattern %>'
+                });
+            });
+        </script>
+        <asp:ContentPlaceHolder id="mcJS" runat="server" />
+    </body>
+</html>

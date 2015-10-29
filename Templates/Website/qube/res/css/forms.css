@@ -1,0 +1,89 @@
+﻿.qube.form {
+    margin: 0 0 1em 0;
+    display: inline-block;
+}
+
+.qube.form div {
+    clear: both;
+    display: block;
+}
+
+.qube.form label {
+    width: auto;
+    text-align: right;
+    font-weight: bold;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: .25em;
+    float: left;
+    clear: left;
+    padding: .6em .5em 0 0;
+}
+
+.qube.form span {
+    padding: .25em 4px 1em 2px;
+    overflow: hidden;
+    display: block;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.qube.form span label {
+    float: none;
+    vertical-align: middle;
+    display: inline-block;
+    padding: 0 .5em 0 0;
+}
+
+.qube.form span input {
+    margin: 0 .25em 0 0;
+}
+
+.qube.form input[type=text],
+.qube.form input[type=password],
+.qube.form select,
+.qube.form textarea
+{
+    padding: .25em;
+    margin-bottom: .25em;
+    border-radius: 2px;
+    min-height: 2em;
+}
+
+.qube.form input[type=checkbox] {
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: .5em;
+}
+
+.qube.form input[type=submit],
+.qube.form .button
+{
+    text-decoration: none;
+    font-weight: bold;
+    padding: .5em;
+    border-radius: 5px;
+    transition: all ease .25s;
+    cursor: pointer;
+    margin-right: .5em;
+}
+.qube.form input[type=submit]:disabled
+{
+    cursor: not-allowed;
+}
+
+.qube.form label {
+    display: block;
+}
+
+.qube.form table span {
+    padding: 0;
+    text-align: inherit;
+}
+.qube.form table span input[type=checkbox] {
+    margin: 0;
+}
+
+.qube.form p {
+    margin-bottom: 1em;
+}

@@ -1,0 +1,13 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/qube/MasterCore.master" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="mcHead" Runat="Server">
+    <asp:ContentPlaceHolder runat="server" ID="mHead" />
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="mcContent" Runat="Server">
+    <asp:ContentPlaceHolder runat="server" ID="mContent" />
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="mcJS" Runat="Server">
+    <asp:ContentPlaceHolder runat="server" ID="mJS" />
+</asp:Content>

@@ -49,9 +49,6 @@
     <Compile Include="Forms\QubeStandardForm.cs" />
     <Compile Include="Forms\QubeFormBase.cs" />
     <Compile Include="Forms\QubeContactForm.cs" />
-    <Compile Include="QubePage.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="Stand-alone\Captcha.cs" />
     <Compile Include="Forms\Components\IQubeFormField.cs" />
     <Compile Include="Stand-alone\MailTo.cs" />

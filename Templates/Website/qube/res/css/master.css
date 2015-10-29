@@ -1,0 +1,50 @@
+﻿body {
+    font-size: 10pt;
+}
+
+.vSummary {
+    color: #f00;
+    border: 1px solid #f00;
+    border-radius: 3px;    
+    text-align: left;
+    padding: .5em;
+    margin-bottom: 1em;
+    background: #fdd;
+}
+
+.vSummary ul {    
+    margin: 0 1em;
+}
+.vSummary ul li {
+    margin: 0 1em;
+}
+
+.tag {
+    padding: .5em;
+    border-radius: 3px;
+    border-width: 1px;
+    border-style: solid;
+}
+.tag.success {
+    border-color: #0d0;
+    color: #080;
+    background: #cfc;
+}
+.tag.error {
+    border-color: #f00;
+    color: #f00;
+    background: #fdd;
+}
+
+.qube.tableCenter {
+    border-collapse: collapse;
+    width: 100%;
+    height: 100%;
+}
+.qube.tableCenter tr td:nth-child(1),
+.qube.tableCenter tr td:nth-child(3) {
+    width: 1px;
+}
+.qube.tableCenter tr:nth-child(2) td:nth-child(2) {
+    text-align: center;
+}

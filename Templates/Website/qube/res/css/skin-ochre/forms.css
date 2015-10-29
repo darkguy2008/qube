@@ -1,0 +1,33 @@
+﻿.qube.form input[type=text],
+.qube.form input[type=password],
+.qube.form select,
+.qube.form textarea
+{
+    border: 1px solid #9ea45a;
+    border-radius: 2px;
+}
+
+.qube.form .button:visited {
+    color: #fff;
+}
+
+.qube.form input[type=submit],
+.qube.form .button
+{
+    border: 1px solid #9ea45a;
+    background: #9ea45a;
+    color: #fff;
+}
+.qube.form input[type=submit]:hover,
+.qube.form .button:hover
+{
+    border: 1px solid #9ea45a;
+    background: #fff;
+    color: #9ea45a !important;
+}
+.qube.form input[type=submit]:disabled
+{
+    border: 1px solid #ccc;
+    background: #ccc;
+    color: #999;
+}

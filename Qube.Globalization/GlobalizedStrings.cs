@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Web;
+using System.Web.Configuration;
 
 namespace Qube.Globalization
 {
@@ -13,7 +14,7 @@ namespace Qube.Globalization
 
         public GlobalizedStrings()
         {
-            Init(HttpContext.Current.Server.MapPath("~/App_GlobalResources/Qube." + CultureInfo.CurrentUICulture.TwoLetterISOLanguageName + ".txt"));
+            Init(HttpContext.Current.Server.MapPath(WebConfigurationManager.AppSettings["QubeRoot"] + "/lang/Qube." + CultureInfo.CurrentUICulture.TwoLetterISOLanguageName + ".txt"));
         }
 
         public GlobalizedStrings(string filename)

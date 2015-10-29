@@ -1,0 +1,29 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    font-family: Tahoma;
+    z-index: 0;
+}
+.f-left { float: left; }
+.f-right { float: right; }
+.center { text-align: center; }
+ul { margin-left: 1em; }
+ul li { margin-left: 1em; }
+
+/* For modern browsers */
+.clear:before,
+.clear:after {
+    content:"";
+    display:table;
+}
+.clear:after {
+    clear:both;
+}
+/* For IE 6/7 (trigger hasLayout) */
+.clear {
+    zoom:1;
+}

@@ -24,7 +24,7 @@ namespace Qube.Web.Core
 
         public WebResource(EResourceType t)
         {
-            Cache = false;
+            Cache = true;
             type = t;
 
             switch (type)
@@ -44,7 +44,6 @@ namespace Qube.Web.Core
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            //Page.DataBind();
         }
 
         protected override void Render(HtmlTextWriter w)

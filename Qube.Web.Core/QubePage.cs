@@ -5,7 +5,7 @@ using System.Web.Configuration;
 using System.Web.UI;
 using System.Linq;
 
-namespace Qube.Web.UI
+namespace Qube.Web.Core
 {
     public class QubePage : Page
     {
