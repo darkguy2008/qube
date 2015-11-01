@@ -186,6 +186,8 @@ namespace Qube.Web.UI
         public string DisplayName { get; set; }
         public string DisplayFormat { get; set; }
         public string PlaceHolder { get; set; }
+        public string Text { get; set; }
+        public bool Checked { get; set; }
         public string OnClientValueChanged { get; set; }
         public EQubeFormBaseFieldType Type { get; set; }
 
@@ -252,7 +254,9 @@ namespace Qube.Web.UI
                 "Rows",
                 "Cols",
                 "Width",
-                "Height"
+                "Height",
+                "Text",
+                "Checked"
                 });
 
                 fld.Attributes.Add("placeholder", PlaceHolder);
