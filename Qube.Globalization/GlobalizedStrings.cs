@@ -14,7 +14,7 @@ namespace Qube.Globalization
 
         public GlobalizedStrings()
         {
-            Init(HttpContext.Current.Server.MapPath(WebConfigurationManager.AppSettings["QubeRoot"] + "/lang/Qube." + CultureInfo.CurrentUICulture.TwoLetterISOLanguageName + ".txt"));
+            Init(HttpContext.Current.Server.MapPath(WebConfigurationManager.AppSettings["QubeRoot"] + "/res/lang/Qube." + CultureInfo.CurrentUICulture.TwoLetterISOLanguageName + ".txt"));
         }
 
         public GlobalizedStrings(string filename)

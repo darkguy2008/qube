@@ -35,6 +35,7 @@ namespace Qube.Web.UI
         public string EmptyErrorMessage { get; set; }
         public string LongErrorMessage { get; set; }
         public EValidationType ValidationType { get; set; }
+        public string PlaceHolder { get; set; }
 
         // Interface members
         public bool RenderLabel { get; set; }
@@ -214,6 +215,8 @@ namespace Qube.Web.UI
 
         protected override void Render(HtmlTextWriter w)
         {
+            if (!String.IsNullOrEmpty(PlaceHolder))
+                Attributes.Add("placeholder", PlaceHolder);
             if(RenderLabel && !string.IsNullOrEmpty(DisplayName))
             {
                 HtmlCustomControl lbl = new HtmlCustomControl("label");
