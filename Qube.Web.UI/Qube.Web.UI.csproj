@@ -46,6 +46,7 @@
     <Compile Include="Forms\Components\QubeCustomValidator.cs" />
     <Compile Include="Forms\Components\QubeFileUpload.cs" />
     <Compile Include="Forms\Components\QubeOneToMany.cs" />
+    <Compile Include="Forms\QubeCRUDForm2.cs" />
     <Compile Include="Forms\QubeStandardForm.cs" />
     <Compile Include="Forms\QubeFormBase.cs" />
     <Compile Include="Forms\QubeContactForm.cs" />
