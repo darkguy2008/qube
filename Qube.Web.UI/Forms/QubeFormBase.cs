@@ -40,6 +40,7 @@ namespace Qube.Web.UI
         public event EventHandler FormLoad;
         public event QubeFormBaseOperationEventHandler FirstLoad;
         public event QubeFormBaseSubmitEventHandler Submit;
+        public Unit LabelWidth { get; set; }
 
         public ValidationSummary Summary;
         public bool IncludeValidationSummary { get; set; }
@@ -48,6 +49,7 @@ namespace Qube.Web.UI
         // it looks right
         public QubeFormBase() : base("div")
         {
+            LabelWidth = Unit.Empty;
             Summary = new ValidationSummary()
             {
                 CssClass = "vSummary"
@@ -80,7 +82,7 @@ namespace Qube.Web.UI
                 Submit.Invoke(this, args);
         }
 
-        public Panel GetCurrentPanel()
+        public virtual Panel GetCurrentPanel()
         {
             QubeExtensions.ControlFinder<QubeFormBasePanel> cf = new QubeExtensions.ControlFinder<QubeFormBasePanel>();
             cf.FindChildControlsRecursive(this, false);
@@ -131,8 +133,8 @@ namespace Qube.Web.UI
                     if (v != null)
                     {
                         if (v.GetType() == typeof(DateTime))
-                            if (!string.IsNullOrEmpty(fields[p.Name].DataFormatString))
-                                v = ((DateTime)v).ToString(fields[p.Name].DataFormatString);
+                            if (!string.IsNullOrEmpty(fields[p.Name].DisplayFormat))
+                                v = ((DateTime)v).ToString(fields[p.Name].DisplayFormat);
                     }
                     fields[p.Name].SetValue(v);
                 }
@@ -167,6 +169,12 @@ namespace Qube.Web.UI
 
         protected override void OnPreRender(EventArgs e)
         {
+            // TODO: Handle Label control type too
+            QubeExtensions.ControlFinder<QubeFormBaseField> cf = new QubeExtensions.ControlFinder<QubeFormBaseField>();
+            cf.FindChildControlsRecursive(this, true);
+            foreach (QubeFormBaseField fld in cf.FoundControls)
+                fld.lbl.Width = FormParent.LabelWidth;
+
             base.OnPreRender(e);
             if (RenderControls != null)
                 RenderControls.Invoke(this, null);
@@ -182,7 +190,7 @@ namespace Qube.Web.UI
         public bool ReadOnly { get; set; }
         public bool MultiLine { get; set; }
         public string DataField { get; set; }
-        public string DataFormat { get; set; }
+        public string DataFormatString { get; set; }
         public string DisplayName { get; set; }
         public string DisplayFormat { get; set; }
         public string PlaceHolder { get; set; }
@@ -192,7 +200,7 @@ namespace Qube.Web.UI
         public EQubeFormBaseFieldType Type { get; set; }
 
         public WebControl fld;
-        private HtmlCustomControl lbl = new HtmlCustomControl("label");
+        public HtmlCustomControl lbl = new HtmlCustomControl("label");
 
         public QubeFormBaseField() : base("div")
         {
@@ -244,7 +252,7 @@ namespace Qube.Web.UI
                 "MaxLength",
                 "Required",
                 "DataField",
-                "DataFormat",
+                "DataFormatString",
                 "DisplayName",
                 "DisplayFormat",
                 "PlaceHolder",
@@ -266,6 +274,9 @@ namespace Qube.Web.UI
                 Controls.Add(fld);
             }
 
+            if (DisplayName != null)
+                lbl.Controls.Add(new Literal() { Text = DisplayName + ":" });
+
             ToolTip = string.Empty;
         }
 
@@ -274,10 +285,7 @@ namespace Qube.Web.UI
             HtmlCustomControl span = new HtmlCustomControl("span");
             base.RenderBeginTag(w);
             if (DisplayName != null)
-            {
-                lbl.Controls.Add(new Literal() { Text = DisplayName + ":" });
                 lbl.RenderControl(w);
-            }
             span.RenderBeginTag(w);
             base.RenderContents(w);
             span.RenderEndTag(w);

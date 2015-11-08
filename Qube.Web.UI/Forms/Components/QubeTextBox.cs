@@ -209,7 +209,7 @@ namespace Qube.Web.UI
                 case EValidationType.Date:
                     return DateTime.ParseExact(Text, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None).ToString(DataFormatString);
                 default:
-                    return string.Format(Text, DataFormatString);
+                    return string.Format(DataFormatString, Text);
             }
         }
 
