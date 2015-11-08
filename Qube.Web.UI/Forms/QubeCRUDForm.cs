@@ -3,7 +3,6 @@ using Qube.Web.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -18,8 +17,13 @@ namespace Qube.Web.UI
         Delete = 0x8
     }
 
-    public class QubeCRUDForm : HtmlCustomControl
+    public class QubeCRUDForm : QubeFormBase
     {
+        private QSManager _qs { get; set; }
+        public object DataId { get; set; }
+        public string DataQuerystringField { get; set; }
+        public string DataQuerystringDeleteField { get; set; }
+
         public EPanelType FormMode { get; set; }
         public string NewButtonText { get; set; }
         public string UpdateButtonText { get; set; }
@@ -31,18 +35,21 @@ namespace Qube.Web.UI
             get { return (string)ViewState[VSID + "key"]; }
             set { ViewState[VSID + "key"] = value; }
         }
+        public bool RedirectOnCancel = true;
+        public bool RedirectOnSubmit = true;
+        public bool AllowInserting { get; set; }
 
         public delegate void QubeCRUDFormOperationEventHandler(QubeCRUDForm sender, Dictionary<string, IQubeFormField> fields);
-        public event QubeCRUDFormOperationEventHandler FirstLoad;
         public event QubeCRUDFormOperationEventHandler Inserting;
         public event QubeCRUDFormOperationEventHandler Updating;
         public event QubeCRUDFormOperationEventHandler Deleting;
         public event QubeCRUDFormOperationEventHandler Cancelling;
         public event EventHandler ModeChanged;
 
-        public QubeCRUDForm() : base("div")
+        public QubeCRUDForm() : base()
         {
             FormMode = EPanelType.Read;
+            AllowInserting = true;
             NewButtonText = "Nuevo...";
             UpdateButtonText = "Guardar";
             DeleteButtonText = "Eliminar";
@@ -52,7 +59,21 @@ namespace Qube.Web.UI
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+
+            _qs = new QSManager(Page.Request);
+            if (!String.IsNullOrEmpty(DataQuerystringField))
+            {
+                if (_qs.Contains(DataQuerystringField))
+                {
+                    DataId = _qs[DataQuerystringField];
+                    FormMode = EPanelType.Update;
+                }
+                if (_qs.Contains(DataQuerystringDeleteField))
+                    FormMode = EPanelType.Delete;
+            }
+
             FormMode = ViewState[VSID + "_FormMode"] == null ? FormMode : (EPanelType)ViewState[VSID + "_FormMode"];
+
             InvokeFirstLoad();
         }
 
@@ -68,43 +89,28 @@ namespace Qube.Web.UI
             base.OnPreRender(e);
         }
 
-        public Panel GetCurrentPanel()
-        {
-            QubeExtensions.ControlFinder<QubeCRUDFormPanel> cf = new QubeExtensions.ControlFinder<QubeCRUDFormPanel>();
-            cf.FindChildControlsRecursive(this);
-            return cf.FoundControls.Where(x => x.Types.HasFlag(FormMode)).First();
-        }
-
-        public Dictionary<string, IQubeFormField> GetFields()
-        {
-            Panel p = GetCurrentPanel();
-
-            QubeExtensions.ControlFinder<IQubeFormField> cfFields = new QubeExtensions.ControlFinder<IQubeFormField>();
-            cfFields.FindChildControlsRecursive(p, false);
-
-            Dictionary<string, IQubeFormField> rv = new Dictionary<string, IQubeFormField>();
-            foreach (Control c in cfFields.FoundControls)
-                rv[((IQubeFormField)c).DataField] = c as IQubeFormField;
-
-            return rv;
-        }
-
         public void InvokeInserting()
         {
             if (Inserting != null)
                 Inserting(this, GetFields());
+            if (RedirectOnSubmit)
+                Page.Response.Redirect(Page.Request.Path);
         }
 
         public void InvokeUpdating()
         {
             if (Updating != null)
                 Updating(this, GetFields());
+            if (RedirectOnSubmit)
+                Page.Response.Redirect(Page.Request.Path);
         }
 
         public void InvokeDeleting()
         {
             if (Deleting != null)
                 Deleting(this, GetFields());
+            if (RedirectOnSubmit)
+                Page.Response.Redirect(Page.Request.Path);
         }
 
         public void InvokeCancelling()
@@ -112,13 +118,10 @@ namespace Qube.Web.UI
             if (Cancelling != null)
                 Cancelling(this, GetFields());
             else
-                SetMode(EPanelType.Read);
-        }
-
-        public void InvokeFirstLoad()
-        {
-            if (FirstLoad != null)
-                FirstLoad(this, GetFields());
+                if (RedirectOnCancel)
+                    Page.Response.Redirect(Page.Request.Path);
+                else
+                    SetMode(EPanelType.Read);
         }
 
         public void InvokeModeChanged()
@@ -134,48 +137,29 @@ namespace Qube.Web.UI
             InvokeModeChanged();
         }
 
-        public static void FieldsToObject(object dst, Dictionary<string, IQubeFormField> fields)
+        public override Panel GetCurrentPanel()
         {
-            PropertyInfo[] pi = dst.GetType().GetProperties();
-            foreach (PropertyInfo p in pi)
-                if (fields.ContainsKey(p.Name))
+            QubeExtensions.ControlFinder<QubeCRUDFormPanel> cf = new QubeExtensions.ControlFinder<QubeCRUDFormPanel>();
+            cf.FindChildControlsRecursive(this, false);
+            foreach (QubeCRUDFormPanel p in cf.FoundControls)
+                if (p.Types.HasFlag(FormMode))
                 {
-                    Type t = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
-                    // TODO: If nullable then apply null value else leave value as-is?
-                    object v = (fields[p.Name].GetValue<object>() == null || String.IsNullOrEmpty(fields[p.Name].GetValue<object>().ToString())) ? null : Convert.ChangeType(fields[p.Name].GetValue<object>(), t);
-                    if (p.CanWrite)
-                        p.SetValue(dst, v, null);
+                    p.IsCurrent = true;
+                    break;
                 }
+            return base.GetCurrentPanel();
         }
 
-        public static void ObjectToFields(object src, Dictionary<string, IQubeFormField> fields)
-        {
-            PropertyInfo[] pi = src.GetType().GetProperties();
-            foreach (PropertyInfo p in pi)
-                if (fields.ContainsKey(p.Name))
-                {
-                    object v = p.GetValue(src, null);
-                    if (v != null)
-                        if (v.GetType() == typeof(DateTime))
-                            if (!string.IsNullOrEmpty(fields[p.Name].DataFormatString))
-                                v = ((DateTime)v).ToString(fields[p.Name].DataFormatString);
-                    fields[p.Name].SetValue(v);
-                }
-        }
     }
 
-    public class QubeCRUDFormPanel : HtmlCustomControl
+    public class QubeCRUDFormPanel : QubeFormBasePanel
     {
         public EPanelType Types { get; set; }
         private Button btnNew = new Button();
         private Button btnUpdate = new Button();
         private Button btnDelete = new Button();
         private Button btnCancel = new Button();
-        private QubeCRUDForm FormParent;
-
-        public QubeCRUDFormPanel() : base("div")
-        {
-        }
+        private new QubeCRUDForm FormParent;
 
         protected override void OnInit(EventArgs e)
         {
@@ -208,7 +192,7 @@ namespace Qube.Web.UI
 
             Controls.Add(new Panel() { CssClass = "clear" });
 
-            if (Types.HasFlag(EPanelType.Read))
+            if (Types.HasFlag(EPanelType.Read) && FormParent.AllowInserting)
                 Controls.Add(btnNew);
 
             if (Types.HasFlag(EPanelType.Create) || Types.HasFlag(EPanelType.Update))
