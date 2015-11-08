@@ -77,12 +77,8 @@ namespace Qube.Web.UI
             foreach (KeyValuePair<string, IQubeFormField> kvp in a.Fields)
                 a.Mail.Body = a.Mail.Body.Replace("{{" + kvp.Value.DataField + "}}", kvp.Value.GetFormattedValue());
 
-            try
-            {
-                a.Smtp.Send(a.Mail);
-                a.Success = true;
-            }
-            catch (Exception) { }
+            a.Smtp.Send(a.Mail);
+            a.Success = true;
 
             if (AfterSend != null)
                 AfterSend.Invoke(this, a);
