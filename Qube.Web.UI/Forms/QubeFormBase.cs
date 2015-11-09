@@ -113,6 +113,8 @@ namespace Qube.Web.UI
 
         public static void FieldsToObject(object dst, Dictionary<string, IQubeFormField> fields)
         {
+            if (dst == null)
+                throw new Exception("FieldsToObject function's Destination (dst) object is null");
             PropertyInfo[] pi = dst.GetType().GetProperties();
             foreach (PropertyInfo p in pi)
                 if (fields.ContainsKey(p.Name))
@@ -125,6 +127,8 @@ namespace Qube.Web.UI
 
         public static void ObjectToFields(object src, Dictionary<string, IQubeFormField> fields)
         {
+            if (src == null)
+                throw new Exception("ObjectToFields function's Source (src) object is null");
             PropertyInfo[] pi = src.GetType().GetProperties();
             foreach (PropertyInfo p in pi)
                 if (fields.ContainsKey(p.Name))
@@ -206,6 +210,7 @@ namespace Qube.Web.UI
         {
             MaxLength = -1;
             Required = false;
+            DataFormatString = "{0}";
         }
 
         protected override void OnInit(EventArgs e)

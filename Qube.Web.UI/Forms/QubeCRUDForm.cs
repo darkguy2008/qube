@@ -1,15 +1,17 @@
 ﻿using Qube.Extensions;
+using Qube.Globalization;
 using Qube.Web.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace Qube.Web.UI
 {
     [Flags]
-    public enum EPanelType
+    public enum ECRUDPanelType
     {
         Create = 0x1,
         Read = 0x2,
@@ -17,236 +19,231 @@ namespace Qube.Web.UI
         Delete = 0x8
     }
 
+    public enum ECRUDFormSwitchMode
+    {
+        QueryString = 1,
+        Postback = 2
+    }
+
     public class QubeCRUDForm : QubeFormBase
     {
+        private GlobalizedStrings Lang = new GlobalizedStrings();
         private QSManager _qs { get; set; }
-        public object DataId { get; set; }
-        public string DataQuerystringField { get; set; }
-        public string DataQuerystringDeleteField { get; set; }
+        private string VSID { get; set; }
 
-        public EPanelType FormMode { get; set; }
+        private string KeyFormMode;
+
+        public string DataId { get; set; }
+        public string DataQueryStringNewField { get; set; }
+        public string DataQueryStringEditField { get; set; }
+        public string DataQueryStringDeleteField { get; set; }
+
+        public ECRUDPanelType FormMode { get; set; }
+        public ECRUDFormSwitchMode SwitchMode { get; set; }
+
+        private Button btnNew = new Button();
+        private Button btnSubmit = new Button();
+        private Button btnDelete = new Button();
+        private Button btnCancel = new Button();
         public string NewButtonText { get; set; }
-        public string UpdateButtonText { get; set; }
+        public string SubmitButtonText { get; set; }
         public string DeleteButtonText { get; set; }
         public string CancelButtonText { get; set; }
-        private string VSID { get; set; }
-        public string Key
-        {
-            get { return (string)ViewState[VSID + "key"]; }
-            set { ViewState[VSID + "key"] = value; }
-        }
-        public bool RedirectOnCancel = true;
-        public bool RedirectOnSubmit = true;
-        public bool AllowInserting { get; set; }
+        public bool AllowCreating { get; set; }
+        public bool AllowDeleting { get; set; }
+        public bool AllowSaving { get; set; }
 
         public delegate void QubeCRUDFormOperationEventHandler(QubeCRUDForm sender, Dictionary<string, IQubeFormField> fields);
         public event QubeCRUDFormOperationEventHandler Inserting;
         public event QubeCRUDFormOperationEventHandler Updating;
         public event QubeCRUDFormOperationEventHandler Deleting;
         public event QubeCRUDFormOperationEventHandler Cancelling;
-        public event EventHandler ModeChanged;
 
         public QubeCRUDForm() : base()
         {
-            FormMode = EPanelType.Read;
-            AllowInserting = true;
-            NewButtonText = "Nuevo...";
-            UpdateButtonText = "Guardar";
-            DeleteButtonText = "Eliminar";
-            CancelButtonText = "Cancelar";
+            FormMode = ECRUDPanelType.Read;
+            SwitchMode = ECRUDFormSwitchMode.QueryString;
+
+            NewButtonText = Lang["CommonNew"];
+            SubmitButtonText = Lang["CommonSave"];
+            DeleteButtonText = Lang["CommonDelete"];
+            CancelButtonText = Lang["CommonCancel"];
+
+            AllowCreating = true;
+            AllowDeleting = true;
+            AllowSaving = true;
+        }
+
+        protected override void OnInit(EventArgs e)
+        {
+            base.OnInit(e);
+            _qs = new QSManager(Page.Request);
+
+            KeyFormMode = VSID + "_FormMode";
+            btnNew.Text = NewButtonText;
+            btnSubmit.Text = SubmitButtonText;
+            btnDelete.Text = DeleteButtonText;
+            btnCancel.Text = CancelButtonText;
+
+            btnNew.ID = string.Format("{0}_{1}", ID, "btnCreate");
+            btnNew.CausesValidation = false;
+            btnNew.Click += BtnCreate_Click;
+
+            btnSubmit.ID = string.Format("{0}_{1}", ID, "btnSave");
+            btnSubmit.Click += btnSubmit_Click;
+
+            btnDelete.ID = string.Format("{0}_{1}", ID, "btnDelete");
+            btnDelete.Click += btnSubmit_Click;
+
+            btnCancel.ID = string.Format("{0}_{1}", ID, "btnCancel");
+            btnCancel.CausesValidation = false;
+            btnCancel.Click += BtnCancel_Click;
+
+            if (SwitchMode == ECRUDFormSwitchMode.QueryString)
+            {
+                if (_qs.Contains(DataQueryStringNewField))
+                    FormMode = ECRUDPanelType.Create;
+                if (_qs.Contains(DataQueryStringEditField))
+                {
+                    DataId = _qs[DataQueryStringEditField];
+                    FormMode = ECRUDPanelType.Update;
+                }
+                if (_qs.Contains(DataQueryStringDeleteField))
+                {
+                    DataId = _qs[DataQueryStringDeleteField];
+                    FormMode = ECRUDPanelType.Delete;
+                }
+            }
+
+            FormMode = ViewState[KeyFormMode] == null ? FormMode : (ECRUDPanelType)ViewState[KeyFormMode];
+            ViewState[KeyFormMode] = FormMode;
+
+            foreach (QubeCRUDFormPanel p in GetAllPanels())
+            {
+                p.Visible = false;
+                p.IsCurrent = false;
+            }
+
+            GetPanel(FormMode).Visible = true;
+            GetPanel(FormMode).IsCurrent = true;
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+            
+            QubeCRUDFormPanel panel = GetPanel(FormMode);
+            panel.Controls.Add(new Panel() { CssClass = "clear" });
 
-            _qs = new QSManager(Page.Request);
-            if (!String.IsNullOrEmpty(DataQuerystringField))
-            {
-                if (_qs.Contains(DataQuerystringField))
-                {
-                    DataId = _qs[DataQuerystringField];
-                    FormMode = EPanelType.Update;
-                }
-                if (_qs.Contains(DataQuerystringDeleteField))
-                    FormMode = EPanelType.Delete;
-            }
+            if (panel.Types.HasFlag(ECRUDPanelType.Read) && AllowCreating)
+                panel.Controls.Add(btnNew);
 
-            FormMode = ViewState[VSID + "_FormMode"] == null ? FormMode : (EPanelType)ViewState[VSID + "_FormMode"];
+            if ( (panel.Types.HasFlag(ECRUDPanelType.Create) || panel.Types.HasFlag(ECRUDPanelType.Update)) && AllowSaving)
+                panel.Controls.Add(btnSubmit);
 
-            InvokeFirstLoad();
+            if (panel.Types.HasFlag(ECRUDPanelType.Delete) && AllowDeleting)
+                panel.Controls.Add(btnDelete);
+
+            if (!panel.Types.HasFlag(ECRUDPanelType.Read))
+                panel.Controls.Add(btnCancel);
         }
 
-        protected override void OnPreRender(EventArgs e)
+        protected QubeCRUDFormPanel GetPanel(ECRUDPanelType type)
         {
             QubeExtensions.ControlFinder<QubeCRUDFormPanel> cf = new QubeExtensions.ControlFinder<QubeCRUDFormPanel>();
-            cf.FindChildControlsRecursive(this);
-            List<QubeCRUDFormPanel> Panels = cf.FoundControls.ToList();
-
-            foreach (QubeCRUDFormPanel p in Panels)
-                p.Visible = p.Types.HasFlag(FormMode);
-
-            base.OnPreRender(e);
+            cf.FindChildControlsRecursive(this, true);
+            return cf.FoundControls.Where(x => x.Types.HasFlag(type)).First();
         }
 
-        public void InvokeInserting()
+        protected IEnumerable<QubeCRUDFormPanel> GetAllPanels()
         {
-            if (Inserting != null)
-                Inserting(this, GetFields());
-            if (RedirectOnSubmit)
-                Page.Response.Redirect(Page.Request.Path);
+            QubeExtensions.ControlFinder<QubeCRUDFormPanel> cf = new QubeExtensions.ControlFinder<QubeCRUDFormPanel>();
+            cf.FindChildControlsRecursive(this, true);
+            return cf.FoundControls;
         }
 
-        public void InvokeUpdating()
+        public void SetMode(ECRUDPanelType mode, object argument = null)
         {
-            if (Updating != null)
-                Updating(this, GetFields());
-            if (RedirectOnSubmit)
-                Page.Response.Redirect(Page.Request.Path);
+            if (SwitchMode == ECRUDFormSwitchMode.QueryString)
+            {
+                string field = String.Empty;
+                if (mode == ECRUDPanelType.Create)
+                {
+                    _qs.Remove(DataQueryStringEditField);
+                    _qs.Remove(DataQueryStringDeleteField);
+                    field = DataQueryStringNewField;
+                }
+                if (mode == ECRUDPanelType.Update)
+                {
+                    _qs.Remove(DataQueryStringNewField);
+                    _qs.Remove(DataQueryStringDeleteField);
+                    field = DataQueryStringEditField;
+                }
+                if (mode == ECRUDPanelType.Delete)
+                {
+                    _qs.Remove(DataQueryStringNewField);
+                    _qs.Remove(DataQueryStringEditField);
+                    field = DataQueryStringDeleteField;
+                }
+                if (argument != null)
+                    _qs[field] = argument.ToString();
+                else
+                    _qs[field] = null;
+
+                if (mode == ECRUDPanelType.Read)
+                {
+                    _qs.Remove(DataQueryStringNewField);
+                    _qs.Remove(DataQueryStringEditField);
+                    _qs.Remove(DataQueryStringDeleteField);
+                }
+
+                Page.Response.Redirect(_qs.Build(Page.Request.Url));
+            }
         }
 
-        public void InvokeDeleting()
+        private void BtnCreate_Click(object sender, EventArgs e)
         {
-            if (Deleting != null)
-                Deleting(this, GetFields());
-            if (RedirectOnSubmit)
-                Page.Response.Redirect(Page.Request.Path);
+            SetMode(ECRUDPanelType.Create);
         }
 
-        public void InvokeCancelling()
+        private void btnSubmit_Click(object sender, EventArgs e)
+        {
+            if (!Page.IsValid)
+                return;
+            if(FormMode == ECRUDPanelType.Create)
+                if (Inserting != null)
+                    Inserting(this, GetFields());
+            if (FormMode == ECRUDPanelType.Update)
+                if (Updating != null)
+                    Updating(this, GetFields());
+            if (FormMode == ECRUDPanelType.Delete)
+                if (Deleting != null)
+                    Deleting(this, GetFields());
+            SetMode(ECRUDPanelType.Read);
+        }
+
+        private void BtnCancel_Click(object sender, EventArgs e)
         {
             if (Cancelling != null)
                 Cancelling(this, GetFields());
-            else
-                if (RedirectOnCancel)
-                    Page.Response.Redirect(Page.Request.Path);
-                else
-                    SetMode(EPanelType.Read);
+            SetMode(ECRUDPanelType.Read);
         }
-
-        public void InvokeModeChanged()
-        {
-            if (ModeChanged != null)
-                ModeChanged(this, new EventArgs());
-        }
-
-        public void SetMode(EPanelType mode)
-        {
-            FormMode = mode;
-            ViewState[VSID + "_FormMode"] = mode;
-            InvokeModeChanged();
-        }
-
-        public override Panel GetCurrentPanel()
-        {
-            QubeExtensions.ControlFinder<QubeCRUDFormPanel> cf = new QubeExtensions.ControlFinder<QubeCRUDFormPanel>();
-            cf.FindChildControlsRecursive(this, false);
-            foreach (QubeCRUDFormPanel p in cf.FoundControls)
-                if (p.Types.HasFlag(FormMode))
-                {
-                    p.IsCurrent = true;
-                    break;
-                }
-            return base.GetCurrentPanel();
-        }
-
     }
 
     public class QubeCRUDFormPanel : QubeFormBasePanel
     {
-        public EPanelType Types { get; set; }
-        private Button btnNew = new Button();
-        private Button btnUpdate = new Button();
-        private Button btnDelete = new Button();
-        private Button btnCancel = new Button();
+        public ECRUDPanelType Types { get; set; }
         private new QubeCRUDForm FormParent;
 
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
-
-            btnNew.ID = string.Format("{0}_{1}_{2}", Parent.ID, ID, "btnCreate");
-            btnNew.CausesValidation = false;
-            btnNew.Click += BtnCreate_Click;
-
-            btnUpdate.ID = string.Format("{0}_{1}_{2}", Parent.ID, ID, "btnUpdate");
-            btnUpdate.Click += BtnUpdate_Click;
-
-            btnDelete.ID = string.Format("{0}_{1}_{2}", Parent.ID, ID, "btnDelete");
-            btnDelete.Click += BtnDelete_Click;
-
-            btnCancel.ID = string.Format("{0}_{1}_{2}", Parent.ID, ID, "btnCancel");
-            btnCancel.CausesValidation = false;
-            btnCancel.Click += BtnCancel_Click;
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
             FormParent = Parent as QubeCRUDForm;
-
-            btnNew.Text = FormParent.NewButtonText;
-            btnUpdate.Text = FormParent.UpdateButtonText;
-            btnDelete.Text = FormParent.DeleteButtonText;
-            btnCancel.Text = FormParent.CancelButtonText;
-
-            Controls.Add(new Panel() { CssClass = "clear" });
-
-            if (Types.HasFlag(EPanelType.Read) && FormParent.AllowInserting)
-                Controls.Add(btnNew);
-
-            if (Types.HasFlag(EPanelType.Create) || Types.HasFlag(EPanelType.Update))
-                Controls.Add(btnUpdate);
-
-            if (Types.HasFlag(EPanelType.Delete))
-                Controls.Add(btnDelete);
-
-            if(!Types.HasFlag(EPanelType.Read))
-                Controls.Add(btnCancel);
-        }
-
-        protected override void Render(HtmlTextWriter w)
-        {
-            base.RenderBeginTag(w);
-
-            foreach(Control c in Controls)
-            {
-                if (c.GetType().GetInterfaces().Contains(typeof(IQubeFormField)))
-                {
-                    HtmlCustomControl lbField = new HtmlCustomControl("label");
-                    lbField.Attributes["for"] = c.ClientID;
-                    lbField.Controls.Add(new Literal() { Text = ((IQubeFormField)c).DisplayName + ":" });
-                    lbField.RenderControl(w);
-                    c.RenderControl(w);
-                    continue;
-                }
-                c.RenderControl(w);
-            }
-
-            base.RenderEndTag(w);
-        }
-
-        private void BtnCreate_Click(object sender, EventArgs e)
-        {
-            ((QubeCRUDForm)Parent).SetMode(EPanelType.Create);
-        }
-
-        private void BtnUpdate_Click(object sender, EventArgs e)
-        {
-            if (FormParent.FormMode == EPanelType.Create)
-                FormParent.InvokeInserting();
-            if (FormParent.FormMode == EPanelType.Update)
-                FormParent.InvokeUpdating();
-        }
-
-        private void BtnDelete_Click(object sender, EventArgs e)
-        {
-            FormParent.InvokeDeleting();
-        }
-
-        private void BtnCancel_Click(object sender, EventArgs e)
-        {
-            FormParent.InvokeCancelling();            
         }
     }
 }

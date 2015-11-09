@@ -21,8 +21,8 @@ namespace Qube.Web.UI
             public bool Success { get; set; }
             public bool Cancel { get; set; }
         }
-        public delegate void QubeContactFormBeforeSendEventHandler(QubeContactForm sender, QubeContactFormSendArguments args);
-        public delegate void QubeContactFormAfterSendEventHandler(QubeContactForm sender, QubeContactFormSendArguments args);
+        public delegate void QubeContactFormBeforeSendEventHandler(QubeContactForm sender, ref QubeContactFormSendArguments args);
+        public delegate void QubeContactFormAfterSendEventHandler(QubeContactForm sender, ref QubeContactFormSendArguments args);
 
         public string SendButtonText { get; set; }
         public event QubeContactFormBeforeSendEventHandler BeforeSend;
@@ -65,12 +65,16 @@ namespace Qube.Web.UI
                 a.Mail.Bcc.Add(EmailBCCAddressesCSV);
             a.Mail.Subject = EmailSubject;
             a.Mail.SubjectEncoding = EmailEncoding;
-            a.Mail.IsBodyHtml = true;
+            a.Mail.IsBodyHtml = false;
+            if (EmailTemplateFile.ToLowerInvariant().Trim().EndsWith("htm") ||
+               EmailTemplateFile.ToLowerInvariant().Trim().EndsWith("html"))
+                a.Mail.IsBodyHtml = true;
             a.Mail.BodyEncoding = EmailEncoding;
             a.Mail.Body = File.ReadAllText(HttpContext.Current.Server.MapPath(EmailTemplateFile));
 
             if (BeforeSend != null)
-                BeforeSend.Invoke(this, a);
+                BeforeSend.Invoke(this, ref a);
+
             if (a.Cancel)
                 return;
 
@@ -81,7 +85,7 @@ namespace Qube.Web.UI
             a.Success = true;
 
             if (AfterSend != null)
-                AfterSend.Invoke(this, a);
+                AfterSend.Invoke(this, ref a);
         }
     }
 
