@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Web;
+using System.Linq;
 
 namespace Qube.Web.Core
 {
@@ -59,10 +60,13 @@ namespace Qube.Web.Core
                 return uri.ToString();
 
             List<string> qs = new List<string>();
-            foreach (var kv in _qs)
+            foreach (var kv in _qs.Where(x => !String.IsNullOrEmpty(x.Key)))
                 qs.Add(kv.Key + "=" + HttpUtility.UrlEncode(kv.Value));
 
-            return uri.GetLeftPart(UriPartial.Path) + "?" + String.Join("&", qs);
+            if(qs.Count > 0)
+                return uri.GetLeftPart(UriPartial.Path) + "?" + String.Join("&", qs);
+            else
+                return uri.GetLeftPart(UriPartial.Path);
         }
     }
 

@@ -46,7 +46,7 @@
     <Compile Include="Forms\Components\QubeCustomValidator.cs" />
     <Compile Include="Forms\Components\QubeFileUpload.cs" />
     <Compile Include="Forms\Components\QubeOneToMany.cs" />
-    <Compile Include="Forms\QubeCRUDForm2.cs" />
+    <Compile Include="Forms\QubeCRUDForm.cs" />
     <Compile Include="Forms\QubeStandardForm.cs" />
     <Compile Include="Forms\QubeFormBase.cs" />
     <Compile Include="Forms\QubeContactForm.cs" />
@@ -54,7 +54,6 @@
     <Compile Include="Forms\Components\IQubeFormField.cs" />
     <Compile Include="Stand-alone\MailTo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Forms\QubeCRUDForm.cs" />
     <Compile Include="Stand-alone\QubeTableCenter.cs" />
     <Compile Include="Stand-alone\QubeTag.cs" />
     <Compile Include="Forms\Components\QubeTextBox.cs" />

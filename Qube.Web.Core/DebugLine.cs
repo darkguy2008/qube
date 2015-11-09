@@ -13,7 +13,7 @@ namespace Qube.Web.Core
 
         public static void Write(object obj)
         {
-            HttpContext.Current.Response.Write("<div style='position: relative; top: 0; left: 0; border: 2px solid red; background: #d00;'>" + obj.ToString() + "</div>");
+            HttpContext.Current.Response.Write("<div style='position: relative; top: 0; left: 0; border: 1px solid red; background: #fdd; margin-bottom: 1px;'>" + obj.ToString() + "</div>");
             line++;
         }
 
