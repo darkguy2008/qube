@@ -42,7 +42,7 @@ namespace Qube.Web.UI
         {
             TextBox txCaptcha = (TextBox)Page.FindControlRecursive(ValidationTextBoxID);
 
-            if (txCaptcha.Text.Trim() == HttpContext.Current.Session["Captcha_" + ID].ToString())
+            if (HttpContext.Current.Session["Captcha_" + ID] != null && txCaptcha.Text.Trim() == HttpContext.Current.Session["Captcha_" + ID].ToString())
             {
                 HttpContext.Current.Session["Valid_" + ID] = true;
                 args.IsValid = true;
