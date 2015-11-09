@@ -98,7 +98,7 @@ namespace Qube.Web.UI
 
         public string GetFormattedValue()
         {
-            return string.Format(SelectedItem.Value, DataFormatString);
+            return string.Format(DataFormatString, SelectedItem.Text);
         }
 
         protected override void Render(HtmlTextWriter w)
