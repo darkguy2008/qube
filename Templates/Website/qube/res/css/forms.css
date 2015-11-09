@@ -3,11 +3,6 @@
     display: inline-block;
 }
 
-.qube.form div {
-    clear: both;
-    display: block;
-}
-
 .qube.form label {
     width: auto;
     text-align: right;
@@ -21,7 +16,7 @@
 }
 
 .qube.form span {
-    padding: .25em 4px 1em 2px;
+    padding: .25em 4px .25em 2px;
     overflow: hidden;
     display: block;
     text-align: left;
@@ -66,6 +61,7 @@
     transition: all ease .25s;
     cursor: pointer;
     margin-right: .5em;
+    margin-top: .5em;
 }
 .qube.form input[type=submit]:disabled
 {

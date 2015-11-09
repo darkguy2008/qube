@@ -29,7 +29,7 @@
                 $(".date").datepicker({
                     changeMonth: true,
                     changeYear: true,
-                    dateFormat: '<%= System.Globalization.CultureInfo.CurrentUICulture.DateTimeFormat.ShortDatePattern %>'
+                    dateFormat: 'dd/mm/yy'
                 });
             });
         </script>

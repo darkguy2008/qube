@@ -14,16 +14,20 @@
 ul { margin-left: 1em; }
 ul li { margin-left: 1em; }
 
+ul li, p {
+    margin-bottom: 1em;
+}
+
 /* For modern browsers */
 .clear:before,
 .clear:after {
-    content:"";
-    display:table;
+    content: "";
+    display: table;
 }
 .clear:after {
-    clear:both;
+    clear: both;
 }
 /* For IE 6/7 (trigger hasLayout) */
 .clear {
-    zoom:1;
+    zoom: 1;
 }
