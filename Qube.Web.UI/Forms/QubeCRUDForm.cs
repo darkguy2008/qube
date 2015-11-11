@@ -52,6 +52,7 @@ namespace Qube.Web.UI
         public bool AllowCreating { get; set; }
         public bool AllowDeleting { get; set; }
         public bool AllowSaving { get; set; }
+        public bool AllowCancelling { get; set; }
 
         public delegate void QubeCRUDFormOperationEventHandler(QubeCRUDForm sender, Dictionary<string, IQubeFormField> fields);
         public event QubeCRUDFormOperationEventHandler Inserting;
@@ -69,9 +70,10 @@ namespace Qube.Web.UI
             DeleteButtonText = Lang["CommonDelete"];
             CancelButtonText = Lang["CommonCancel"];
 
+            AllowSaving = true;
             AllowCreating = true;
             AllowDeleting = true;
-            AllowSaving = true;
+            AllowCancelling = true;
         }
 
         protected override void OnInit(EventArgs e)
@@ -144,7 +146,7 @@ namespace Qube.Web.UI
             if (panel.Types.HasFlag(ECRUDPanelType.Delete) && AllowDeleting)
                 panel.Controls.Add(btnDelete);
 
-            if (!panel.Types.HasFlag(ECRUDPanelType.Read))
+            if (!panel.Types.HasFlag(ECRUDPanelType.Read) && AllowCancelling)
                 panel.Controls.Add(btnCancel);
         }
 
@@ -222,6 +224,7 @@ namespace Qube.Web.UI
             SetMode(ECRUDPanelType.Read);
         }
 
+        // TODO: e.Abort = true ?
         private void BtnCancel_Click(object sender, EventArgs e)
         {
             if (Cancelling != null)

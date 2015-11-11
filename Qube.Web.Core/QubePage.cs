@@ -4,11 +4,20 @@ using System.Web;
 using System.Web.Configuration;
 using System.Web.UI;
 using System.Linq;
+using System;
 
 namespace Qube.Web.Core
 {
     public class QubePage : Page
     {
+        protected QSManager qs;
+
+        protected override void OnInit(EventArgs e)
+        {
+            qs = new QSManager(Request);
+            base.OnInit(e);
+        }
+
         protected override void Render(HtmlTextWriter w)
         {
             string set = WebConfigurationManager.AppSettings["QubeSettings"];

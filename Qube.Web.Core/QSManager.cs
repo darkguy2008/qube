@@ -68,6 +68,11 @@ namespace Qube.Web.Core
             else
                 return uri.GetLeftPart(UriPartial.Path);
         }
+
+        public void RedirectToSelf()
+        {
+            HttpContext.Current.Response.Redirect(Build(HttpContext.Current.Request.Url));
+        }
     }
 
 }
