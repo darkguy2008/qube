@@ -27,7 +27,7 @@ namespace Qube.Web.UI
 
     public class QubeCRUDForm : QubeFormBase
     {
-        public class QubeCRUDFormCancelArguments
+        public class QubeCRUDFormActionArguments
         {
             public Dictionary<string, IQubeFormField> Fields { get; set; }
             public bool AbortCancelDefaultBehaviour { get; set; }
@@ -59,12 +59,12 @@ namespace Qube.Web.UI
         public bool AllowSaving { get; set; }
         public bool AllowCancelling { get; set; }
 
-        public delegate void QubeCRUDFormCancelOperationEventHandler(QubeCRUDForm sender, ref QubeCRUDFormCancelArguments args);
+        public delegate void QubeCRUDFormActionEventHandler(QubeCRUDForm sender, ref QubeCRUDFormActionArguments args);
         public delegate void QubeCRUDFormOperationEventHandler(QubeCRUDForm sender, Dictionary<string, IQubeFormField> fields);
-        public event QubeCRUDFormOperationEventHandler Inserting;
-        public event QubeCRUDFormOperationEventHandler Updating;
-        public event QubeCRUDFormOperationEventHandler Deleting;
-        public event QubeCRUDFormCancelOperationEventHandler Cancelling;
+        public event QubeCRUDFormActionEventHandler Inserting;
+        public event QubeCRUDFormActionEventHandler Updating;
+        public event QubeCRUDFormActionEventHandler Deleting;
+        public event QubeCRUDFormActionEventHandler Cancelling;
 
         public QubeCRUDForm() : base()
         {
@@ -218,23 +218,29 @@ namespace Qube.Web.UI
         {
             if (!Page.IsValid)
                 return;
-            if(FormMode == ECRUDPanelType.Create)
+            QubeCRUDFormActionArguments args = new QubeCRUDFormActionArguments()
+            {
+                Fields = GetFields(),
+                AbortCancelDefaultBehaviour = false
+            };
+            if (FormMode == ECRUDPanelType.Create)
                 if (Inserting != null)
-                    Inserting(this, GetFields());
+                    Inserting(this, ref args);
             if (FormMode == ECRUDPanelType.Update)
                 if (Updating != null)
-                    Updating(this, GetFields());
+                    Updating(this, ref args);
             if (FormMode == ECRUDPanelType.Delete)
                 if (Deleting != null)
-                    Deleting(this, GetFields());
-            SetMode(ECRUDPanelType.Read);
+                    Deleting(this, ref args);
+            if(!args.AbortCancelDefaultBehaviour)
+                SetMode(ECRUDPanelType.Read);
         }
 
         private void BtnCancel_Click(object sender, EventArgs e)
         {
             if (Cancelling != null)
             {
-                QubeCRUDFormCancelArguments args = new QubeCRUDFormCancelArguments()
+                QubeCRUDFormActionArguments args = new QubeCRUDFormActionArguments()
                 {
                     Fields = GetFields(),
                     AbortCancelDefaultBehaviour = false
