@@ -27,6 +27,11 @@ namespace Qube.Web.UI
 
     public class QubeCRUDForm : QubeFormBase
     {
+        public class QubeCRUDFormCancelArguments
+        {
+            public Dictionary<string, IQubeFormField> Fields { get; set; }
+            public bool AbortCancelDefaultBehaviour { get; set; }
+        }
         private GlobalizedStrings Lang = new GlobalizedStrings();
         private QSManager _qs { get; set; }
         private string VSID { get; set; }
@@ -54,11 +59,12 @@ namespace Qube.Web.UI
         public bool AllowSaving { get; set; }
         public bool AllowCancelling { get; set; }
 
+        public delegate void QubeCRUDFormCancelOperationEventHandler(QubeCRUDForm sender, ref QubeCRUDFormCancelArguments args);
         public delegate void QubeCRUDFormOperationEventHandler(QubeCRUDForm sender, Dictionary<string, IQubeFormField> fields);
         public event QubeCRUDFormOperationEventHandler Inserting;
         public event QubeCRUDFormOperationEventHandler Updating;
         public event QubeCRUDFormOperationEventHandler Deleting;
-        public event QubeCRUDFormOperationEventHandler Cancelling;
+        public event QubeCRUDFormCancelOperationEventHandler Cancelling;
 
         public QubeCRUDForm() : base()
         {
@@ -224,12 +230,19 @@ namespace Qube.Web.UI
             SetMode(ECRUDPanelType.Read);
         }
 
-        // TODO: e.Abort = true ?
         private void BtnCancel_Click(object sender, EventArgs e)
         {
             if (Cancelling != null)
-                Cancelling(this, GetFields());
-            SetMode(ECRUDPanelType.Read);
+            {
+                QubeCRUDFormCancelArguments args = new QubeCRUDFormCancelArguments()
+                {
+                    Fields = GetFields(),
+                    AbortCancelDefaultBehaviour = false
+                };
+                Cancelling(this, ref args);
+                if(!args.AbortCancelDefaultBehaviour)
+                    SetMode(ECRUDPanelType.Read);
+            }
         }
     }
 

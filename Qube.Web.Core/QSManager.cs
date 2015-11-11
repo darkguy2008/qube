@@ -57,7 +57,7 @@ namespace Qube.Web.Core
         public string Build(Uri uri)
         {
             if (_qs.Count <= 0)
-                return uri.ToString();
+                return uri.GetLeftPart(UriPartial.Path);
 
             List<string> qs = new List<string>();
             foreach (var kv in _qs.Where(x => !String.IsNullOrEmpty(x.Key)))
