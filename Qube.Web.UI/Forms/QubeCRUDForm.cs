@@ -30,7 +30,7 @@ namespace Qube.Web.UI
         public class QubeCRUDFormActionArguments
         {
             public Dictionary<string, IQubeFormField> Fields { get; set; }
-            public bool AbortCancelDefaultBehaviour { get; set; }
+            public bool AbortDefaultBehaviour { get; set; }
         }
         private GlobalizedStrings Lang = new GlobalizedStrings();
         private QSManager _qs { get; set; }
@@ -221,7 +221,7 @@ namespace Qube.Web.UI
             QubeCRUDFormActionArguments args = new QubeCRUDFormActionArguments()
             {
                 Fields = GetFields(),
-                AbortCancelDefaultBehaviour = false
+                AbortDefaultBehaviour = false
             };
             if (FormMode == ECRUDPanelType.Create)
                 if (Inserting != null)
@@ -232,23 +232,21 @@ namespace Qube.Web.UI
             if (FormMode == ECRUDPanelType.Delete)
                 if (Deleting != null)
                     Deleting(this, ref args);
-            if(!args.AbortCancelDefaultBehaviour)
+            if(!args.AbortDefaultBehaviour)
                 SetMode(ECRUDPanelType.Read);
         }
 
         private void BtnCancel_Click(object sender, EventArgs e)
         {
-            if (Cancelling != null)
+            QubeCRUDFormActionArguments args = new QubeCRUDFormActionArguments()
             {
-                QubeCRUDFormActionArguments args = new QubeCRUDFormActionArguments()
-                {
-                    Fields = GetFields(),
-                    AbortCancelDefaultBehaviour = false
-                };
+                Fields = GetFields(),
+                AbortDefaultBehaviour = false
+            };
+            if (Cancelling != null)
                 Cancelling(this, ref args);
-                if(!args.AbortCancelDefaultBehaviour)
-                    SetMode(ECRUDPanelType.Read);
-            }
+            if (!args.AbortDefaultBehaviour)
+                SetMode(ECRUDPanelType.Read);
         }
     }
 
