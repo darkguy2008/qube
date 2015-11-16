@@ -16,6 +16,7 @@ namespace Qube.Web.UI
         Alphanumeric,
         AllChars,
         Date,
+        Time,
         Currency,
         DropDownList,
         Checkbox,
@@ -56,6 +57,13 @@ namespace Qube.Web.UI
                 CssClass = "vSummary"
             };
             IncludeValidationSummary = false;
+        }
+
+        protected override void OnInit(EventArgs e)
+        {
+            base.OnInit(e);
+            if (IncludeValidationSummary)
+                Controls.AddAt(0, Summary);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -161,8 +169,6 @@ namespace Qube.Web.UI
         private void QubeFormBasePanel_Init(object sender, EventArgs e)
         {
             FormParent = Parent as QubeFormBase;
-            if (FormParent.IncludeValidationSummary)
-                Controls.Add(FormParent.Summary);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -227,6 +233,7 @@ namespace Qube.Web.UI
                 case EQubeFormBaseFieldType.Alphanumeric:
                 case EQubeFormBaseFieldType.AllChars:
                 case EQubeFormBaseFieldType.Date:
+                case EQubeFormBaseFieldType.Time:
                 case EQubeFormBaseFieldType.Numeric:
                 case EQubeFormBaseFieldType.Password:
                 case EQubeFormBaseFieldType.Currency:
@@ -235,6 +242,8 @@ namespace Qube.Web.UI
                     ((QubeTextBox)fld).ValidationType = (EValidationType)Type;
                     if (Type == EQubeFormBaseFieldType.Date)
                         fld.CssClass = "date";
+                    if (Type == EQubeFormBaseFieldType.Time)
+                        fld.CssClass = "time";
                     if (Type == EQubeFormBaseFieldType.Password)
                         ((QubeTextBox)fld).TextMode = TextBoxMode.Password;
                     if (MultiLine)

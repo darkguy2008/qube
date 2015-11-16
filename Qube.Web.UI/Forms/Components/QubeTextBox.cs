@@ -16,6 +16,7 @@ namespace Qube.Web.UI
         Alphanumeric,
         AllChars,
         Date,
+        Time,
         Currency,
         DropDownList,
         Checkbox,
@@ -90,7 +91,7 @@ namespace Qube.Web.UI
                 );
             }
 
-            if(ValidationType == EValidationType.Currency && !String.IsNullOrEmpty(DisplayFormat))
+            if(ValidationType == EValidationType.Currency && !string.IsNullOrEmpty(DisplayFormat))
             {
                 string opts = "";
                 switch (DisplayFormat.ToLowerInvariant().Trim())
@@ -113,6 +114,8 @@ namespace Qube.Web.UI
 
             if (ValidationType == EValidationType.Date)
                 CssClass = "date";
+            if (ValidationType == EValidationType.Time)
+                CssClass = "time";
         }
 
         void cv_ServerValidate(object source, ServerValidateEventArgs args)
@@ -163,7 +166,11 @@ namespace Qube.Web.UI
                         DateTime tmp = DateTime.MinValue;
                         if (!DateTime.TryParseExact(args.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out tmp))
                             args.IsValid = false;
-                        break;                        
+                        break;
+                    case EValidationType.Time:
+                        if (!DateTime.TryParseExact(args.Value, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out tmp))
+                            args.IsValid = false;
+                        break;
                     case EValidationType.Password:
                         if (!Regex.IsMatch(args.Value, @"^[a-zA-Z0-9\#\!\@\$\&\*\+\-_]*$"))
                             args.IsValid = false;
@@ -177,11 +184,11 @@ namespace Qube.Web.UI
 
         public T GetValue<T>()
         {
-            String rv = Text;
+            string rv = Text;
 
-            if (!String.IsNullOrEmpty(rv))
+            if (!string.IsNullOrEmpty(rv))
             {
-                if (ValidationType == EValidationType.Currency && !String.IsNullOrEmpty(DisplayFormat))
+                if (ValidationType == EValidationType.Currency && !string.IsNullOrEmpty(DisplayFormat))
                 {
                     switch (DisplayFormat.ToLowerInvariant().Trim())
                     {
@@ -209,6 +216,8 @@ namespace Qube.Web.UI
             {
                 case EValidationType.Date:
                     return DateTime.ParseExact(Text, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None).ToString(DataFormatString);
+                case EValidationType.Time:
+                    return DateTime.ParseExact(Text, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None).ToString(DataFormatString);
                 default:
                     return string.Format(DataFormatString, Text);
             }
@@ -216,7 +225,7 @@ namespace Qube.Web.UI
 
         protected override void Render(HtmlTextWriter w)
         {
-            if (!String.IsNullOrEmpty(PlaceHolder))
+            if (!string.IsNullOrEmpty(PlaceHolder))
                 Attributes.Add("placeholder", PlaceHolder);
             if(RenderLabel && !string.IsNullOrEmpty(DisplayName))
             {

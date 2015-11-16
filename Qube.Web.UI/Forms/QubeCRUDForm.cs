@@ -173,7 +173,7 @@ namespace Qube.Web.UI
         {
             if (SwitchMode == ECRUDFormSwitchMode.QueryString)
             {
-                string field = String.Empty;
+                string field = string.Empty;
                 if (mode == ECRUDPanelType.Create)
                 {
                     _qs.Remove(DataQueryStringEditField);

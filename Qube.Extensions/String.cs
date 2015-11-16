@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace Qube.Extensions
 {
@@ -11,7 +10,7 @@ namespace Qube.Extensions
         }
         public static string ToStringSafe(this object value, string format = "{0}", CultureInfo ci = null)
         {
-            return value == null ? string.Empty : String.Format(ci, format, value);
+            return value == null ? string.Empty : string.Format(ci, format, value);
         }
     }
 }

@@ -60,11 +60,11 @@ namespace Qube.Web.Core
                 return uri.GetLeftPart(UriPartial.Path);
 
             List<string> qs = new List<string>();
-            foreach (var kv in _qs.Where(x => !String.IsNullOrEmpty(x.Key)))
+            foreach (var kv in _qs.Where(x => !string.IsNullOrEmpty(x.Key)))
                 qs.Add(kv.Key + "=" + HttpUtility.UrlEncode(kv.Value));
 
             if(qs.Count > 0)
-                return uri.GetLeftPart(UriPartial.Path) + "?" + String.Join("&", qs);
+                return uri.GetLeftPart(UriPartial.Path) + "?" + string.Join("&", qs);
             else
                 return uri.GetLeftPart(UriPartial.Path);
         }
