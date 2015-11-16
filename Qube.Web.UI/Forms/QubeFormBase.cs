@@ -14,6 +14,7 @@ namespace Qube.Web.UI
         Alpha = 1,
         Numeric,
         Alphanumeric,
+        AllChars,
         Date,
         Currency,
         DropDownList,
@@ -224,6 +225,7 @@ namespace Qube.Web.UI
             {
                 case EQubeFormBaseFieldType.Alpha:
                 case EQubeFormBaseFieldType.Alphanumeric:
+                case EQubeFormBaseFieldType.AllChars:
                 case EQubeFormBaseFieldType.Date:
                 case EQubeFormBaseFieldType.Numeric:
                 case EQubeFormBaseFieldType.Password:

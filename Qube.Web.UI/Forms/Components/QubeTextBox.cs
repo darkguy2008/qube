@@ -14,6 +14,7 @@ namespace Qube.Web.UI
         Alpha = 1,
         Numeric,
         Alphanumeric,
+        AllChars,
         Date,
         Currency,
         DropDownList,
