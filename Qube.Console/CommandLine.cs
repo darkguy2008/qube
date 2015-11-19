@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Qube.Console
+namespace Qube.ConsoleApp
 {
     public class CommandLine
     {
