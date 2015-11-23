@@ -16,6 +16,7 @@ namespace Qube.Web.UI
         Alphanumeric,
         AllChars,
         Date,
+        MultiDate,
         Time,
         Currency,
         DropDownList,
@@ -114,6 +115,8 @@ namespace Qube.Web.UI
 
             if (ValidationType == EValidationType.Date)
                 CssClass = "date";
+            if (ValidationType == EValidationType.MultiDate)
+                CssClass = "multidate";
             if (ValidationType == EValidationType.Time)
                 CssClass = "time";
         }

@@ -16,6 +16,7 @@ namespace Qube.Web.UI
         Alphanumeric,
         AllChars,
         Date,
+        MultiDate,
         Time,
         Currency,
         DropDownList,
@@ -233,6 +234,7 @@ namespace Qube.Web.UI
                 case EQubeFormBaseFieldType.Alphanumeric:
                 case EQubeFormBaseFieldType.AllChars:
                 case EQubeFormBaseFieldType.Date:
+                case EQubeFormBaseFieldType.MultiDate:
                 case EQubeFormBaseFieldType.Time:
                 case EQubeFormBaseFieldType.Numeric:
                 case EQubeFormBaseFieldType.Password:
@@ -242,6 +244,8 @@ namespace Qube.Web.UI
                     ((QubeTextBox)fld).ValidationType = (EValidationType)Type;
                     if (Type == EQubeFormBaseFieldType.Date)
                         fld.CssClass = "date";
+                    if (Type == EQubeFormBaseFieldType.MultiDate)
+                        fld.CssClass = "multidate";
                     if (Type == EQubeFormBaseFieldType.Time)
                         fld.CssClass = "time";
                     if (Type == EQubeFormBaseFieldType.Password)
