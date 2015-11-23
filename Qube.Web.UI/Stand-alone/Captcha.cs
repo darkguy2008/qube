@@ -38,6 +38,17 @@ namespace Qube.Web.UI
             cv.ServerValidate += cv_ServerValidate;
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            cv.ControlToValidate = ValidationTextBoxID;
+            cv.ErrorMessage = ErrorMessage;
+            cv.Display = Display;
+            Controls.Add(cv);
+            if (!Page.IsPostBack)
+                Regenerate();
+        }
+
         void cv_ServerValidate(object source, ServerValidateEventArgs args)
         {
             TextBox txCaptcha = (TextBox)Page.FindControlRecursive(ValidationTextBoxID);
@@ -52,20 +63,8 @@ namespace Qube.Web.UI
                 Regenerate();
                 args.IsValid = false;
                 txCaptcha.Text = string.Empty;
+
             }
-        }
-
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-
-            cv.ControlToValidate = ValidationTextBoxID;
-            cv.ErrorMessage = ErrorMessage;
-            cv.Display = Display;
-            Controls.Add(cv);
-
-            if (!Page.IsPostBack)
-                Regenerate();
         }
 
         public void Regenerate()

@@ -31,9 +31,9 @@ namespace Qube.Web.Core
                     html = Regex.Replace(html, @"(?<=[^])\t{2,}|(?<=[>])\s{2,}(?=[<])|(?<=[>])\s{2,11}(?=[<])|(?=[\n])\s{2,}", string.Empty);
                     html = Regex.Replace(html, @"[ \f\r\t\v]?([\n\xFE\xFF/{}[\];,<>*%&|^!~?:=])[\f\r\t\v]?", "$1");
                     html = html.Replace(";\n", ";");
-                    html = HttpUtility.HtmlDecode(html);
                 }
 
+                html = HttpUtility.HtmlDecode(html);
                 w.Write(html.Trim());
             }
         }
