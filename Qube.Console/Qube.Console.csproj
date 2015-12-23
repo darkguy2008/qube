@@ -44,6 +44,12 @@
     <Compile Include="ConsoleApp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Qube.Diagnostics\Qube.Diagnostics.csproj">
+      <Project>{01f5bd31-f353-497b-b2c4-8d4014efb178}</Project>
+      <Name>Qube.Diagnostics</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
