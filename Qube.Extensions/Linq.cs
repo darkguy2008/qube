@@ -56,9 +56,7 @@ namespace Qube.Extensions
             foreach (T iListItem in iList)
             {
                 for (int i = 0; i < values.Length; i++)
-                {
                     values[i] = propertyDescriptorCollection[i].GetValue(iListItem);
-                }
                 dataTable.Rows.Add(values);
             }
             return dataTable;
