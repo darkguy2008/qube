@@ -144,6 +144,16 @@ namespace Qube.Diagnostics
         public void Close()
         {
             IsFinished = true;
+            if (sw != null)
+                sw.Close();
+        }
+
+        public void Open()
+        {
+            sw = new StreamWriter(CurrentLogFilename, true)
+            {
+                AutoFlush = true
+            };
         }
 
         public void Refresh()
@@ -166,10 +176,7 @@ namespace Qube.Diagnostics
             }
 
             CurrentLogFilename = Parent.PathLog + "\\" + Prefix + "." + Tag + ".log";
-            sw = new StreamWriter(CurrentLogFilename, true)
-            {
-                AutoFlush = true
-            };
+            Open();
         }
 
         public void SetFilename(String fName)
@@ -180,10 +187,7 @@ namespace Qube.Diagnostics
                 sw.Close();
 
             CurrentLogFilename = fName;
-            sw = new StreamWriter(fName, true)
-            {
-                AutoFlush = true
-            };
+            Open();
         }
 
         public void Write(Object s)
