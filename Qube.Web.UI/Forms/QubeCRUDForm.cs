@@ -215,23 +215,21 @@ namespace Qube.Web.UI
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            if (!Page.IsValid)
-                return;
+            if (FormMode != ECRUDPanelType.Delete)
+                if (!Page.IsValid)
+                    return;
             QubeCRUDFormActionArguments args = new QubeCRUDFormActionArguments()
             {
                 Fields = GetFields(),
                 AbortDefaultBehaviour = false
             };
             if (FormMode == ECRUDPanelType.Create)
-                if (Inserting != null)
-                    Inserting(this, ref args);
+                Inserting?.Invoke(this, ref args);
             if (FormMode == ECRUDPanelType.Update)
-                if (Updating != null)
-                    Updating(this, ref args);
+                Updating?.Invoke(this, ref args);
             if (FormMode == ECRUDPanelType.Delete)
-                if (Deleting != null)
-                    Deleting(this, ref args);
-            if(!args.AbortDefaultBehaviour)
+                Deleting?.Invoke(this, ref args);
+            if (!args.AbortDefaultBehaviour)
                 SetMode(ECRUDPanelType.Read);
         }
 
@@ -242,8 +240,7 @@ namespace Qube.Web.UI
                 Fields = GetFields(),
                 AbortDefaultBehaviour = false
             };
-            if (Cancelling != null)
-                Cancelling(this, ref args);
+            Cancelling?.Invoke(this, ref args);
             if (!args.AbortDefaultBehaviour)
                 SetMode(ECRUDPanelType.Read);
         }

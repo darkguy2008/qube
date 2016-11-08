@@ -76,14 +76,12 @@ namespace Qube.Web.UI
 
         public void InvokeLoad(EventArgs e)
         {
-            if (FormLoad != null)
-                FormLoad(this, e);
+            FormLoad?.Invoke(this, e);
         }
 
         public void InvokeFirstLoad()
         {
-            if (FirstLoad != null)
-                FirstLoad(this, GetFields());
+            FirstLoad?.Invoke(this, GetFields());
         }
 
         public void InvokeSubmit(QubeFormBaseSubmitArguments args)
